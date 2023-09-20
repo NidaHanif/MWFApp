@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\GalaryPic\food\" />
+    <Folder Include="wwwroot\GalaryPic\well\" />
+    <Folder Include="wwwroot\GalaryPic\pump\" />
+    <Folder Include="wwwroot\GalaryPic\Sadqa Bakra\" />
+    <Folder Include="wwwroot\GalaryPic\Qurbani 2023\" />
+    <Folder Include="wwwroot\GalaryPic\Qurani Makatib\" />
+  </ItemGroup>
+
+</Project>
