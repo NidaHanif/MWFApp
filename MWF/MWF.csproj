@@ -7,6 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\NewFolder\Home.cshtml.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Pages\NewFolder\Home.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="wwwroot\GalaryPic\food\" />
     <Folder Include="wwwroot\GalaryPic\well\" />
     <Folder Include="wwwroot\GalaryPic\pump\" />
