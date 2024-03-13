@@ -12,6 +12,11 @@
 
   <ItemGroup>
     <Content Remove="Pages\NewFolder\Home.cshtml" />
+    <Content Remove="Pages\Ramadan Ration.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Pages\About.css" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,6 +26,18 @@
     <Folder Include="wwwroot\GalaryPic\Sadqa Bakra\" />
     <Folder Include="wwwroot\GalaryPic\Qurbani 2023\" />
     <Folder Include="wwwroot\GalaryPic\Qurani Makatib\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\Ramadan Ration.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Ramadan Ration.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Pages\Ramadan Ration.razor" />
   </ItemGroup>
 
 </Project>
