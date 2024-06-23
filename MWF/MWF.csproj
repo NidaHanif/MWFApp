@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Content Remove="Pages\NewFolder\Home.cshtml" />
+    <Content Remove="Pages\Qurbani2023.razor" />
     <Content Remove="Pages\Ramadan Ration.razor" />
   </ItemGroup>
 
@@ -33,11 +34,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\Qurbani2023.razor" />
     <_ContentIncludedByDefault Remove="Pages\Ramadan Ration.razor" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Pages\Ramadan Ration.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Pages\Qurbani2023.razor" />
   </ItemGroup>
 
 </Project>
