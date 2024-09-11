@@ -1,0 +1,80 @@
+﻿@page "/DonationForm"
+@using System.Data;
+@using MWF.Models;
+@inject DonationDbContext DbContext
+
+<h3>Donation Form</h3>
+
+<EditForm Model="@Models" OnValidSubmit="@Submit">
+    <div>
+        <label>Donor Name</label>
+    </div>
+
+    <div>
+        <label>Amount</label>
+        <InputNumber @bind-Value="Donation.Amount" />
+    </div>
+
+    <div>
+        <label>Date</label>
+        <InputDate @bind-Value="donation.DonationDate" />
+    </div>
+
+    <div>
+        <label>Donation Type</label>
+        <InputSelect @bind-Value="donation.DonationTypeId">
+            <option value="">Select Type</option>
+            @foreach (var type in donationTypes)
+            {
+                <option value="@type.DonationTypeId">@type.TypeName</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div>
+        <label>Currency</label>
+        <InputSelect @bind-Value="donation.CurrencyId">
+            <option value="">Select Currency</option>
+            @foreach (var currency in currencies)
+            {
+                <option value="@currency.CurrencyId">@currency.Name</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div>
+        <label>Payment Mode</label>
+        <InputSelect @bind-Value="donation.PaymentModeId">
+            <option value="">Select Payment Mode</option>
+            @foreach (var mode in paymentModes)
+            {
+                <option value="@mode.PaymentModeId">@mode.ModeName</option>
+            }
+        </InputSelect>
+    </div>
+
+    <button type="submit">Submit</button>
+</EditForm>
+
+@code {
+    private Donation donation = new Donation();
+    private List<Donor> donors;
+    private List<DonationType> donationTypes;
+    private List<Currency> currencies;
+    private List<PaymentMode> paymentModes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        donors = await DbContext.Donors.ToListAsync();
+        donationTypes = await DbContext.DonationTypes.ToListAsync();
+        currencies = await DbContext.Currencies.ToListAsync();
+        paymentModes = await DbContext.PaymentModes.ToListAsync();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        DbContext.Donations.Add(donation);
+        await DbContext.SaveChangesAsync();
+        donation = new Donation(); // Reset the form
+    }
+}
