@@ -106,7 +106,7 @@
         </div>
         <div class="col-md-6">
             <label for="Phone_Number">Phone Number</label>
-            <InputDate id="Phone_Number" class="form-control" @bind-Value="donation.PhoneNumber" />
+            <InputText id="Phone_Number" class="form-control" @bind-Value="donation.PhoneNumber" />
         </div>
         <div class="col-md-6">
         <label for="DonationType">Donation Type</label>
@@ -161,7 +161,7 @@
     </div>
     </div>
 
-    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="submit" class="btn btn-primary" style="text-align:center; margin-bottom: 20px;">Submit</button>
 </EditForm>
 
 @code {
