@@ -1,4 +1,6 @@
-﻿@page "/DonationForm"
+﻿@*
+
+@page "/DonationForm"
 @using System.Data;
 @using MWF.Models;
 @inject DonationDbContext DbContext
@@ -76,5 +78,112 @@
         DbContext.Donations.Add(donation);
         await DbContext.SaveChangesAsync();
         donation = new Donation(); // Reset the form
+    }
+}
+*@
+
+@page "/DonationForm"
+
+<h3>Donation Form</h3>
+
+<EditForm Model="@donation" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="row mt-2">
+        <div class="col-md-6">
+        <label for="Rec_No">Receipt Number</label>
+        <InputText id="Rec_No" class="form-control" @bind-Value="donation.Rec_No" />
+        </div>
+        <div class="col-md-6">
+        <label for="Rec_Date">Receipt Date</label>
+        <InputDate id="Rec_Date" class="form-control" @bind-Value="donation.Rec_Date" />    
+    </div>
+
+        <div class="col-md-6">
+            <label for="Gmail">Gmail</label>
+            <InputText id="Gmail" class="form-control" @bind-Value="donation.Gmail" />
+        </div>
+        <div class="col-md-6">
+            <label for="Phone_Number">Phone Number</label>
+            <InputDate id="Phone_Number" class="form-control" @bind-Value="donation.PhoneNumber" />
+        </div>
+        <div class="col-md-6">
+        <label for="DonationType">Donation Type</label>
+        <InputSelect id="DonationType" class="form-control" @bind-Value="donation.DonationType">
+            <option value="">-- Select Donation Type --</option>
+            <option value="Cash">Food</option>
+            <option value="Cash">Masjid Fund</option>
+            <option value="Cash">Zakat</option>
+            <option value="Cash">Atiyat</option>
+            <option value="Cash">Sadaqah</option>
+        </InputSelect>
+    </div>
+
+        <div class="col-md-6">
+        <label for="PaymentMode">Payment Mode</label>
+        <InputSelect id="PaymentMode" class="form-control" @bind-Value="donation.PaymentMode">
+            <option value="">-- Select Payment Mode --</option>
+            <option value="Bank">Bank Transfer</option>
+            <option value="Cash">Cash</option>
+            <option value="Cheque">Online</option>
+        </InputSelect>
+    </div>
+
+        <div class="col-md-6">
+        <label for="ChequeNo">Cheque Number</label>
+        <InputText id="ChequeNo" class="form-control" @bind-Value="donation.ChequeNo" />
+    </div>
+
+        <div class="col-md-6">
+        <label for="Currency">Currency</label>
+        <InputSelect id="Currency" class="form-control" @bind-Value="donation.Currency">
+            <option value="">-- Select Currency --</option>
+                <option value="PKR">PKR</option>
+                <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="INR">INR</option>
+        </InputSelect>
+    </div>
+
+        <div class="col-md-6">
+        <label for="Amount">Amount</label>
+        <InputNumber id="Amount" class="form-control" @bind-Value="donation.Amount" />
+    </div>
+        <div class="col-md-6">
+            <label for="Reference">Reference</label>
+            <InputText id="Reference" class="form-control" @bind-Value="donation.Reference" />
+        </div>
+
+        <div class="col-md-4">
+            <label for="Remarks">Remarks</label>
+        <InputTextArea id="Remarks" class="form-control" @bind-Value="donation.Remarks" />
+    </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+@code {
+    private Donation donation = new Donation();
+
+    private void HandleValidSubmit()
+    {
+        Console.WriteLine($"Donation submitted: {donation.Rec_No}, {donation.Rec_Date}, {donation.Amount}");
+    }
+
+    public class Donation
+    {
+        public string Rec_No { get; set; }
+        public DateTime Rec_Date { get; set; }
+        public string Gmail { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Reference { get; set; }
+        public string DonationType { get; set; }
+        public string PaymentMode { get; set; }
+        public string ChequeNo { get; set; }
+        public string Currency { get; set; }
+        public decimal Amount { get; set; }
+        public string Remarks { get; set; }
     }
 }

@@ -1,8 +1,10 @@
-﻿@page "/Form"
+﻿@*
+
+@page "/Form"
 
 <h3>Characters</h3>
 
-@*<table class="table">
+<table class="table">
     <thead>
         <tr>
             <th></th>
@@ -29,7 +31,7 @@
 </table>
 <button class="btn btn-primary" @onclick="CreateCharacter">Create New Character</button>
 
-<hr />*@
+<hr />
 
 <EditForm Model="donation" OnValidSubmit="HandleSubmit">
     <DataAnnotationsValidator />
@@ -71,7 +73,7 @@
             }
         </InputSelect>
     </div>
-    @*<div>
+    <div>
         <InputCheckbox id="readyToFight" @bind-Value="character.IsReadyToFight" class="form-check-input"></InputCheckbox>
         <label for="readyToFight" class="form-check-label">Ready to Fight</label>
     </div>
@@ -81,7 +83,7 @@
     <div>
         <label for="image">Image</label>
         <InputFile OnChange="OnFileChange" class="form-control"></InputFile>
-    </div>*@
+    </div>
     <br />
     <button type="submit" class="btn btn-primary">@(isNew ? "Create Character" : "Update Character")</button>
     @if (!isNew)
@@ -162,7 +164,7 @@
     {
         donation.Remove(character);
     }
-    @*
+    
     async Task OnFileChange(InputFileChangeEventArgs e)
     {
         var format = "image/png";
@@ -171,5 +173,6 @@
         await resizedImage.OpenReadStream().ReadAsync(buffer);
         var imageData = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
         character.Image = imageData;
-    }*@
+    }
 }
+*@
