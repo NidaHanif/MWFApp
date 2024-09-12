@@ -130,15 +130,25 @@
             <option value="">-- Select Payment Mode --</option>
             <option value="Bank">Bank Transfer</option>
             <option value="Cash">Cash</option>
-            <option value="Cheque">Online</option>
+            <option value="Cheque">Cheque</option>
         </InputSelect>
     </div>
+    @if (donation.PaymentMode == "Cheque")
+    {
+        <div class="form-group">
+            <label for="ChequeNo">Cheque Number</label>
+            <InputText id="ChequeNo" class="form-control" @bind-Value="donation.ChequeNo" />
+            <ValidationMessage For="@(() => donation.ChequeNo)" />
+        </div>
 
-        <div class="col-md-6">
-        <label for="ChequeNo">Cheque Number</label>
-        <InputText id="ChequeNo" class="form-control" @bind-Value="donation.ChequeNo" />
-    </div>
+        <div class="form-group">
+            <label for="ChequeDate">Cheque Date</label>
+            <InputDate id="ChequeDate" class="form-control" @bind-Value="donation.ChequeDate" />
+            <ValidationMessage For="@(() => donation.ChequeDate)" />
+        </div>
+    }
 
+        
         <div class="col-md-6">
         <label for="Currency">Currency</label>
         <InputSelect id="Currency" class="form-control" @bind-Value="donation.Currency">
@@ -165,7 +175,7 @@
     </div>
     </div>
 
-    <button type="submit" class="btn btn-primary" style="text-align:center; margin-bottom: 20px;">Submit</button>
+    <button type="submit" class="btn btn-primary" style="text-align:center; margin-bottom: 20px;">Save</button>
 </EditForm>
 
 @code {
@@ -182,11 +192,19 @@
         public DateTime Rec_Date { get; set; }
         [EmailAddress(ErrorMessage = "Enter a valid Email address.")]
         public string Email { get; set; }
+
+        [Phone(ErrorMessage = "Enter a valid Phone number.")] 
         public string PhoneNumber { get; set; }
+        
         public string Reference { get; set; }
         public string DonationType { get; set; }
+
+        [Required(ErrorMessage = "Payment mode is required.")] 
         public string PaymentMode { get; set; }
+        
         public string ChequeNo { get; set; }
+        public DateTime ChequeDate { get; set; }
+        
         public string Currency { get; set; }
         public decimal Amount { get; set; }
         public string Remarks { get; set; }
