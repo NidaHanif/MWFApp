@@ -20,8 +20,7 @@ namespace MWF.Models
         public Currency Currency { get; set; }
         public decimal Amount { get; set; }
         public string Remarks { get; set; }
-
-                 
+        
             
              }
 
