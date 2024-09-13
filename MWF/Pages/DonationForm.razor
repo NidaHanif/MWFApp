@@ -87,6 +87,8 @@
 <h3>Donation Form</h3>
 
 @using System.ComponentModel.DataAnnotations; 
+@using MWF.Pages;
+
 
 <EditForm Model="@donation" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
@@ -175,21 +177,30 @@
     </div>
     </div>
 
-    <button type="submit" class="btn btn-primary" style="text-align:center; margin-bottom: 20px;">Save</button>
+    <button type="submit" class="btn btn-primary" onclick="DonationList" style="text-align:center; margin-bottom: 20px;">Save</button>
 </EditForm>
 
 @code {
     private Donation donation = new Donation();
 
+    [Inject]
+    public DonationService DonationService { get; set; }
+
+    [Inject]
+    public NavigationManager Navigation { get; set; }
+
     private void HandleValidSubmit()
     {
-        Console.WriteLine($"Donation submitted: {donation.Rec_No}, {donation.Rec_Date}, {donation.Amount}");
+        //DonationService.AddDonation(donation);
+        Navigation.NavigateTo("/donationlist");
     }
 
     public class Donation
     {
         public string Rec_No { get; set; }
         public DateTime Rec_Date { get; set; }
+        public string DonorName { get; set; }
+
         [EmailAddress(ErrorMessage = "Enter a valid Email address.")]
         public string Email { get; set; }
 
@@ -209,4 +220,4 @@
         public decimal Amount { get; set; }
         public string Remarks { get; set; }
     }
-}
+    }

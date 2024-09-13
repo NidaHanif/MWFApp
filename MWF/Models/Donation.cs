@@ -5,10 +5,10 @@ namespace MWF.Models
     public class Donation
     {
         public int DonationId { get; set; }
-        public int Rec_No { get; set; }
+        public string Rec_No { get; set; }
         public DateTime Rec_Date { get; set; }
         public int DonorId { get; set; }
-        public string Donor { get; set; }
+        public string DonorName { get; set; }
 
         public string Reference { get; set; }
         public int DonationTypeId { get; set; }
@@ -20,6 +20,7 @@ namespace MWF.Models
         public Currency Currency { get; set; }
         public decimal Amount { get; set; }
         public string Remarks { get; set; }
+
                  
             
              }

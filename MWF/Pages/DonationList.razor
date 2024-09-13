@@ -1,0 +1,41 @@
+﻿@page "/DonationList"
+
+@using MWF.Pages;
+@using MWF.Models;
+
+<h3>Donation List</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Receipt Number</th>
+            <th>Receipt Date</th>
+            <th>Donor Name</th>
+            <th>Amount</th>
+            <th>Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var donation in DonationService.GetDonations())
+        {
+            <tr>
+                <td>@donation.Rec_No</td>
+                <td>@donation.Rec_Date.ToString("yyyy-MM-dd")</td>
+                <td>@donation.Email</td>
+                <td>@donation.Amount</td>
+                <td><button @onclick="() => DonationEdit(donation)">Edit</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    [Inject]
+    public DonationService DonationService { get; set; }
+
+    private void DonationEdit(DonationService donation)
+    {
+        // Logic to navigate to the edit page, passing the donation data
+        // e.g., NavigationManager.NavigateTo("/editdonation/" + donation.Rec_No);
+    }
+}
