@@ -1,93 +1,17 @@
-﻿@*
-
-@page "/DonationForm"
-@using System.Data;
-@using MWF.Models;
-@inject DonationDbContext DbContext
-
-<h3>Donation Form</h3>
-
-<EditForm Model="@Models" OnValidSubmit="@Submit">
-    <div>
-        <label>Donor Name</label>
-    </div>
-
-    <div>
-        <label>Amount</label>
-        <InputNumber @bind-Value="Donation.Amount" />
-    </div>
-
-    <div>
-        <label>Date</label>
-        <InputDate @bind-Value="donation.DonationDate" />
-    </div>
-
-    <div>
-        <label>Donation Type</label>
-        <InputSelect @bind-Value="donation.DonationTypeId">
-            <option value="">Select Type</option>
-            @foreach (var type in donationTypes)
-            {
-                <option value="@type.DonationTypeId">@type.TypeName</option>
-            }
-        </InputSelect>
-    </div>
-
-    <div>
-        <label>Currency</label>
-        <InputSelect @bind-Value="donation.CurrencyId">
-            <option value="">Select Currency</option>
-            @foreach (var currency in currencies)
-            {
-                <option value="@currency.CurrencyId">@currency.Name</option>
-            }
-        </InputSelect>
-    </div>
-
-    <div>
-        <label>Payment Mode</label>
-        <InputSelect @bind-Value="donation.PaymentModeId">
-            <option value="">Select Payment Mode</option>
-            @foreach (var mode in paymentModes)
-            {
-                <option value="@mode.PaymentModeId">@mode.ModeName</option>
-            }
-        </InputSelect>
-    </div>
-
-    <button type="submit">Submit</button>
-</EditForm>
-
-@code {
-    private Donation donation = new Donation();
-    private List<Donor> donors;
-    private List<DonationType> donationTypes;
-    private List<Currency> currencies;
-    private List<PaymentMode> paymentModes;
-
-    protected override async Task OnInitializedAsync()
-    {
-        donors = await DbContext.Donors.ToListAsync();
-        donationTypes = await DbContext.DonationTypes.ToListAsync();
-        currencies = await DbContext.Currencies.ToListAsync();
-        paymentModes = await DbContext.PaymentModes.ToListAsync();
-    }
-
-    private async Task HandleValidSubmit()
-    {
-        DbContext.Donations.Add(donation);
-        await DbContext.SaveChangesAsync();
-        donation = new Donation(); // Reset the form
-    }
-}
-*@
-
-@page "/DonationForm"
+﻿@page "/DonationForm"
 
 <h3>Donation Form</h3>
 
 @using System.ComponentModel.DataAnnotations; 
 @using MWF.Pages;
+@using MWF.Codes;
+@using MWF.Models;
+@using System;
+@using System.Collections.Generic;
+@using System.Data;
+@using System.Data.SQLite;
+@using System.Text;
+
 
 
 <EditForm Model="@donation" OnValidSubmit="HandleValidSubmit">
@@ -114,6 +38,7 @@
             <label for="Phone_Number">Phone Number</label>
             <InputText id="Phone_Number" class="form-control" @bind-Value="donation.PhoneNumber" />
         </div>
+
         <div class="col-md-6">
         <label for="DonationType">Donation Type</label>
         <InputSelect id="DonationType" class="form-control" @bind-Value="donation.DonationType">
@@ -149,9 +74,7 @@
             <ValidationMessage For="@(() => donation.ChequeDate)" />
         </div>
     }
-
-        
-        <div class="col-md-6">
+    <div class="col-md-6">
         <label for="Currency">Currency</label>
         <InputSelect id="Currency" class="form-control" @bind-Value="donation.Currency">
             <option value="">-- Select Currency --</option>
@@ -178,10 +101,16 @@
     </div>
 
     <button type="submit" class="btn btn-primary" onclick="/DonationList" style="text-align:center; margin-bottom: 20px;">Save</button>
+    <button type="button" @onclick="SaveDonation" class="btn btn-success">Save Data</button>
+
 </EditForm>
 
 @code {
+
     private Donation donation = new Donation();
+    
+    [Inject]
+    public DonationList DonationList { get; set; }
 
     [Inject]
     public DonationService DonationService { get; set; }
@@ -195,8 +124,15 @@
         Navigation.NavigateTo("/DonationList");
     }
 
+
     public class Donation
     {
+        public int DonationId { get; set; }
+        public int DonorId { get; set; }
+        public int DonationTypeId { get; set; }
+        public int CurrencyId { get; set; }
+        public int PaymentModeId { get; set; }
+
         public string Rec_No { get; set; }
         public DateTime Rec_Date { get; set; }
         public string DonorName { get; set; }
@@ -220,4 +156,77 @@
         public decimal Amount { get; set; }
         public string Remarks { get; set; }
     }
+    private void Model2Row()
+    {
+        MyRow["DonationID"] = donation.DonationId;
+        MyRow["DonorID"] = donation.DonorId;
+        MyRow["DonationTypeID"] = donation.DonationTypeId;
+        MyRow["CurrencyID"] = donation.CurrencyId;
+        MyRow["PaymentModeID"] = donation.PaymentModeId;
+        MyRow["Amount"] = donation.Amount;
+        MyRow["Rec_Date"] = donation.Rec_Date;
     }
+    private DataRow MyRow;
+    private string MyMessage;
+
+
+    private void SaveDonation()
+    {
+        Model2Row();
+        string _TableName = MyRow.Table.TableName;
+        long _DonationID = (long)MyRow["DonationID"];
+        int _Effected;
+        TableClass _Table = new("Donation");
+        var _RecDate = ((DateTime)MyRow["Rec_Date"]).ToString("yyyy-MM-dd");
+
+        string _Filter = $"[DonationID]={_DonationID}";
+        _Table.MyDataView.RowFilter = _Filter;
+
+        if (_Table.MyDataView.Count == 1)  
+        {
+            var _Command = new SQLiteCommand(ConnectionClass.GetConnected());
+            var _Text = new StringBuilder();
+            _Text.Append($"UPDATE [{_TableName}] SET ");
+            _Text.Append($"[DonorID]={MyRow["DonorID"]}, ");
+            _Text.Append($"[DonationTypeID]={MyRow["DonationTypeID"]}, ");
+            _Text.Append($"[CurrencyID]={MyRow["CurrencyID"]}, ");
+            _Text.Append($"[PaymentModeID]={MyRow["PaymentModeID"]}, ");
+            _Text.Append($"[Amount]={MyRow["Amount"]}, ");
+            _Text.Append($"[Rec_Date]='{_RecDate}' ");
+            _Text.Append($"WHERE [DonationID]={_DonationID}");
+
+            _Command = new(_Text.ToString(), ConnectionClass.GetConnected());
+            _Effected = _Command.ExecuteNonQuery();
+
+            if (_Effected > 0)
+            {
+                MyMessage = $"{_Effected} Row(s) updated successfully.";
+            }
+        }
+        else
+        {
+            var _MAXID = (long)_Table.MyDataTable.Compute("MAX(DonationID)", "") + 1;
+            var _Command = new SQLiteCommand(ConnectionClass.GetConnected());
+            var _Text = new StringBuilder();
+            _Text.Append($"INSERT INTO [{_TableName}] (DonationID, DonorID, DonationTypeID, CurrencyID, PaymentModeID, Amount, DonationDate) ");
+            _Text.Append($"VALUES ({_MAXID}, {MyRow["DonorID"]}, {MyRow["DonationTypeID"]}, {MyRow["CurrencyID"]}, ");
+            _Text.Append($"{MyRow["PaymentModeID"]}, {MyRow["Amount"]}, '{_RecDate}')");
+
+            try
+            {
+                _Command = new(_Text.ToString(), ConnectionClass.GetConnected());
+                _Effected = _Command.ExecuteNonQuery();
+
+                if (_Effected > 0)
+                {
+                    MyMessage = $"{_Effected} Row(s) inserted successfully.";
+                }
+            }
+            catch (Exception e)
+            {
+                MyMessage = e.Message;
+            }
+        }
+}
+
+}
