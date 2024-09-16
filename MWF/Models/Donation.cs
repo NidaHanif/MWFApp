@@ -5,7 +5,7 @@ namespace MWF.Models
     public class Donation
     {
         public int DonationId { get; set; }
-        public string Rec_No { get; set; }
+        public int Rec_No { get; set; }
         public DateTime Rec_Date { get; set; }
         public int DonorId { get; set; }
         public string DonorName { get; set; }

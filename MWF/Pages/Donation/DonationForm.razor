@@ -1,0 +1,223 @@
+﻿@*
+
+@page "/DonationForm"
+@using System.Data;
+@using MWF.Models;
+@inject DonationDbContext DbContext
+
+<h3>Donation Form</h3>
+
+<EditForm Model="@Models" OnValidSubmit="@Submit">
+    <div>
+        <label>Donor Name</label>
+    </div>
+
+    <div>
+        <label>Amount</label>
+        <InputNumber @bind-Value="Donation.Amount" />
+    </div>
+
+    <div>
+        <label>Date</label>
+        <InputDate @bind-Value="donation.DonationDate" />
+    </div>
+
+    <div>
+        <label>Donation Type</label>
+        <InputSelect @bind-Value="donation.DonationTypeId">
+            <option value="">Select Type</option>
+            @foreach (var type in donationTypes)
+            {
+                <option value="@type.DonationTypeId">@type.TypeName</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div>
+        <label>Currency</label>
+        <InputSelect @bind-Value="donation.CurrencyId">
+            <option value="">Select Currency</option>
+            @foreach (var currency in currencies)
+            {
+                <option value="@currency.CurrencyId">@currency.Name</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div>
+        <label>Payment Mode</label>
+        <InputSelect @bind-Value="donation.PaymentModeId">
+            <option value="">Select Payment Mode</option>
+            @foreach (var mode in paymentModes)
+            {
+                <option value="@mode.PaymentModeId">@mode.ModeName</option>
+            }
+        </InputSelect>
+    </div>
+
+    <button type="submit">Submit</button>
+</EditForm>
+
+@code {
+    private Donation donation = new Donation();
+    private List<Donor> donors;
+    private List<DonationType> donationTypes;
+    private List<Currency> currencies;
+    private List<PaymentMode> paymentModes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        donors = await DbContext.Donors.ToListAsync();
+        donationTypes = await DbContext.DonationTypes.ToListAsync();
+        currencies = await DbContext.Currencies.ToListAsync();
+        paymentModes = await DbContext.PaymentModes.ToListAsync();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        DbContext.Donations.Add(donation);
+        await DbContext.SaveChangesAsync();
+        donation = new Donation(); // Reset the form
+    }
+}
+*@
+
+@page "/DonationForm"
+
+<h3>Donation Form</h3>
+
+@using System.ComponentModel.DataAnnotations; 
+@using MWF.Pages;
+
+
+<EditForm Model="@donation" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="row mt-2">
+        <div class="col-md-6">
+        <label for="Rec_No">Receipt Number</label>
+        <InputText id="Rec_No" class="form-control" @bind-Value="donation.Rec_No" />
+        </div>
+        <div class="col-md-6">
+        <label for="Rec_Date">Receipt Date</label>
+        <InputDate id="Rec_Date" class="form-control" @bind-Value="donation.Rec_Date" />    
+    </div>
+
+        <div class="col-md-6">
+            <label for="Email">Email </label>
+            <InputText id="Email" class="form-control" @bind-Value="donation.Email" />
+            <ValidationMessage For="@(() => donation.Email)" />
+        </div>
+
+        <div class="col-md-6">
+            <label for="Phone_Number">Phone Number</label>
+            <InputText id="Phone_Number" class="form-control" @bind-Value="donation.PhoneNumber" />
+        </div>
+        <div class="col-md-6">
+        <label for="DonationType">Donation Type</label>
+        <InputSelect id="DonationType" class="form-control" @bind-Value="donation.DonationType">
+            <option value="">-- Select Donation Type --</option>
+            <option value="Cash">Food</option>
+            <option value="Cash">Masjid Fund</option>
+            <option value="Cash">Zakat</option>
+            <option value="Cash">Atiyat</option>
+            <option value="Cash">Sadaqah</option>
+        </InputSelect>
+    </div>
+
+        <div class="col-md-6">
+        <label for="PaymentMode">Payment Mode</label>
+        <InputSelect id="PaymentMode" class="form-control" @bind-Value="donation.PaymentMode">
+            <option value="">-- Select Payment Mode --</option>
+            <option value="Bank">Bank Transfer</option>
+            <option value="Cash">Cash</option>
+            <option value="Cheque">Cheque</option>
+        </InputSelect>
+    </div>
+    @if (donation.PaymentMode == "Cheque")
+    {
+        <div class="form-group">
+            <label for="ChequeNo">Cheque Number</label>
+            <InputText id="ChequeNo" class="form-control" @bind-Value="donation.ChequeNo" />
+            <ValidationMessage For="@(() => donation.ChequeNo)" />
+        </div>
+
+        <div class="form-group">
+            <label for="ChequeDate">Cheque Date</label>
+            <InputDate id="ChequeDate" class="form-control" @bind-Value="donation.ChequeDate" />
+            <ValidationMessage For="@(() => donation.ChequeDate)" />
+        </div>
+    }
+
+        
+        <div class="col-md-6">
+        <label for="Currency">Currency</label>
+        <InputSelect id="Currency" class="form-control" @bind-Value="donation.Currency">
+            <option value="">-- Select Currency --</option>
+                <option value="PKR">PKR</option>
+                <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="INR">INR</option>
+        </InputSelect>
+    </div>
+
+        <div class="col-md-6">
+        <label for="Amount">Amount</label>
+        <InputNumber id="Amount" class="form-control" @bind-Value="donation.Amount" />
+    </div>
+        <div class="col-md-6">
+            <label for="Reference">Reference</label>
+            <InputText id="Reference" class="form-control" @bind-Value="donation.Reference" />
+        </div>
+
+        <div class="col-md-4">
+            <label for="Remarks">Remarks</label>
+        <InputTextArea id="Remarks" class="form-control" @bind-Value="donation.Remarks" />
+    </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary" onclick="/DonationList" style="text-align:center; margin-bottom: 20px;">Save</button>
+</EditForm>
+
+@code {
+    private Donation donation = new Donation();
+
+    [Inject]
+    public DonationService DonationService { get; set; }
+
+    [Inject]
+    public NavigationManager Navigation { get; set; }
+
+    private void HandleValidSubmit()
+    {
+        //DonationService.AddDonation(donation);
+        Navigation.NavigateTo("/DonationList");
+    }
+
+    public class Donation
+    {
+        public string Rec_No { get; set; }
+        public DateTime Rec_Date { get; set; }
+        public string DonorName { get; set; }
+
+        [EmailAddress(ErrorMessage = "Enter a valid Email address.")]
+        public string Email { get; set; }
+
+        [Phone(ErrorMessage = "Enter a valid Phone number.")] 
+        public string PhoneNumber { get; set; }
+        
+        public string Reference { get; set; }
+        public string DonationType { get; set; }
+
+        [Required(ErrorMessage = "Payment mode is required.")] 
+        public string PaymentMode { get; set; }
+        
+        public string ChequeNo { get; set; }
+        public DateTime ChequeDate { get; set; }
+        
+        public string Currency { get; set; }
+        public decimal Amount { get; set; }
+        public string Remarks { get; set; }
+    }
+    }

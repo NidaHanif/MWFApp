@@ -41,7 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Pages\DonationList.razor" />
+    <None Include="Pages\Donation\DonationList.razor" />
     <None Include="Pages\Ramadan Ration.razor" />
   </ItemGroup>
 
@@ -51,6 +51,10 @@
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Pages\DonationList.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
   </ItemGroup>
 
 </Project>
