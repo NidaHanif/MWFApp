@@ -1,6 +1,6 @@
 ﻿
 @page "/DonationList"
-@inject DonationService _donationService
+@inject NavigationManager _navigationManager
 
 @using MWF.Pages;
 @using MWF.Models;
@@ -19,7 +19,7 @@
             <th>Donor Name</th>
             <th>Amount</th>
             
-            <th><a class="btn btn-light" style="width:30%" href="/DonationForm" role="button"><i class="bi bi-plus me-2"></i>
+            <th><a class="btn btn-light" style="width:20%" href="/DonationForm" role="button"><i class="bi bi-plus me-2"></i>
             
             </a>
             </th>
@@ -32,12 +32,12 @@
                 <td>@item.Rec_No</td>
                 <td>@item.Rec_Date.ToString("yyyy-MM-dd")</td>
                 <td>@item.DonorName</td>
-                <td>@item.Amount</td>
+                <td>@item.Amount.ToString("###,###,###,##")</td>
                 @*<td><button @onclick="() => DonationEdit(item.DonorId)">Edit</button></td>*@
                 <td>
                 <a class="btn btn-danger" style="width:20%" href=""><i class="bi bi-pencil-fill me-2"></i></a>
-                <button class="btn btn-primary" style="width:20%"><i class="bi bi-trash3-fill me-2"></i></button>
-                <a class="btn btn-secondary" style="width:20%" href=""><i class="bi bi-printer-fill me-2"></i></a>
+                    <button type="submit" @onclick="() => DeleteDonation(item.DonationId)" class="btn btn-dangerous"><i class="bi bi-trash3" style=" color: red;margin-right:5px"></i></button>
+                    <a class="btn btn-secondary" style="width:20%" href=""><i class="bi bi-printer-fill me-2"></i></a>
                 </td>
             </tr>
         }
@@ -45,12 +45,41 @@
 </table>
 
 @code {
+
     [Inject]
     public DonationService DonationService { get; set; }
 
-    private void DonationEdit(int RecID)
+    private void DonationEdit(int DonationId)
     {
-        // Logic to navigate to the edit page, passing the donation data
-        // e.g., NavigationManager.NavigateTo("/editdonation/" + donation.Rec_No);
+        
     }
+    private string MyMessage;
+
+    private void DeleteDonation(long DonationId)
+    {
+        if (DonationId > 0)
+        {
+            var TextDelete = "DELETE FROM [Donation] WHERE [DonationId] = @DonationId";
+            var SQLCommand = new SQLiteCommand(TextDelete, ConnectionClass.GetConnected());
+            SQLCommand.Parameters.AddWithValue("@DonationId", DonationId);
+
+            // Execute the deletion command
+            var effected = SQLCommand.ExecuteNonQuery();
+            if (effected > 0)
+            {
+                // Navigate to donation list after deletion
+                _navigationManager.NavigateTo("/DonationList");
+                MyMessage = "Donation has been deleted successfully.";
+            }
+            else
+            {
+                MyMessage = "Donation not deleted.";
+            }
+        }
+        else
+        {
+            MyMessage = "Donation ID must be greater than zero.";
+        }
+    }
+    
 }

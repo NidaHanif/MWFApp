@@ -1,4 +1,5 @@
 ﻿@page "/DonationForm"
+@inject NavigationManager _navigationManager
 
 <h3>Donation Form</h3>
 
@@ -102,6 +103,7 @@
 
     <button type="submit" class="btn btn-primary" onclick="/DonationList" style="text-align:center; margin-bottom: 20px;">Save</button>
     <button type="button" @onclick="SaveDonation" class="btn btn-success">Save Data</button>
+    <button type="submit" class="btn btn-primary" onclick="Submit">Save</button>
 
 </EditForm>
 
@@ -178,6 +180,7 @@
         int _Effected;
         TableClass _Table = new("Donation");
         var _RecDate = ((DateTime)MyRow["Rec_Date"]).ToString("yyyy-MM-dd");
+        var _Amount = ((decimal)MyRow["Amount"]).ToString("###,###,###.##");
 
         string _Filter = $"[DonationID]={_DonationID}";
         _Table.MyDataView.RowFilter = _Filter;
@@ -228,5 +231,10 @@
             }
         }
 }
+    private void Submit()
+    {
+        var a = donation.DonationId;
+    }
 
+    
 }
