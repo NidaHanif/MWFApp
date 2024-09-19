@@ -10,20 +10,11 @@ public class DonationService
 {
     private List<Donation> donations = new List<Donation>();
 
-
-
     public List<Donation> GetDonations()
     {
         SQLiteConnection _Connection = ConnectionClass.GetConnected();
         SQLiteCommand _Command = new SQLiteCommand(_Connection);
-        _Command.CommandText = @"
-        SELECT 
-            Donation.Rec_No, 
-            Donation.Rec_Date, 
-            Donation.Amount, 
-            Donor.Name AS DonorName
-        FROM Donation
-        INNER JOIN Donor ON Donor.ID = Donation.DonorID";
+        _Command.CommandText = "SELECT * FROM [vew_Donation]";
 
         SQLiteDataAdapter _Adapter = new(_Command);
         DataSet _Dataset = new DataSet();
@@ -39,10 +30,11 @@ public class DonationService
             {
                 Donation _Donation = new Donation()
                 {
+                    ID = (int)_Row["ID"],
                     Rec_No = (int)_Row["Rec_No"],
                     Rec_Date = (DateTime)_Row["Rec_Date"],
                     Amount = (decimal)_Row["Amount"],
-                    DonorName = (string)_Row["DonorName"] 
+                    DonorName = (string)_Row["Name"]
                 };
 
                 donations.Add(_Donation);

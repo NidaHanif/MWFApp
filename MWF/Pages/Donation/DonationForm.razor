@@ -1,9 +1,9 @@
 ﻿@page "/DonationForm"
-@inject NavigationManager _navigationManager
+@inject NavigationManager NavManager;
 
 <h3>Donation Form</h3>
 
-@using System.ComponentModel.DataAnnotations; 
+@using System.ComponentModel.DataAnnotations;
 @using MWF.Pages;
 @using MWF.Codes;
 @using MWF.Models;
@@ -13,179 +13,115 @@
 @using System.Data.SQLite;
 @using System.Text;
 
-
-
-<EditForm Model="@donation" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <div class="row mt-2">
-        <div class="col-md-6">
-        <label for="Rec_No">Receipt Number</label>
-        <InputText id="Rec_No" class="form-control" @bind-Value="donation.Rec_No" />
-        </div>
-        <div class="col-md-6">
-        <label for="Rec_Date">Receipt Date</label>
-        <InputDate id="Rec_Date" class="form-control" @bind-Value="donation.Rec_Date" />    
-    </div>
-
-        <div class="col-md-6">
-            <label for="Email">Email </label>
-            <InputText id="Email" class="form-control" @bind-Value="donation.Email" />
-            <ValidationMessage For="@(() => donation.Email)" />
-        </div>
-
-        <div class="col-md-6">
-            <label for="Phone_Number">Phone Number</label>
-            <InputText id="Phone_Number" class="form-control" @bind-Value="donation.PhoneNumber" />
-        </div>
-
-        <div class="col-md-6">
-        <label for="DonationType">Donation Type</label>
-        <InputSelect id="DonationType" class="form-control" @bind-Value="donation.DonationType">
-            <option value="">-- Select Donation Type --</option>
-            <option value="Cash">Food</option>
-            <option value="Cash">Masjid Fund</option>
-            <option value="Cash">Zakat</option>
-            <option value="Cash">Atiyat</option>
-            <option value="Cash">Sadaqah</option>
-        </InputSelect>
-    </div>
-
-        <div class="col-md-6">
-        <label for="PaymentMode">Payment Mode</label>
-        <InputSelect id="PaymentMode" class="form-control" @bind-Value="donation.PaymentMode">
-            <option value="">-- Select Payment Mode --</option>
-            <option value="Bank">Bank Transfer</option>
-            <option value="Cash">Cash</option>
-            <option value="Cheque">Cheque</option>
-        </InputSelect>
-    </div>
-    @if (donation.PaymentMode == "Cheque")
-    {
-        <div class="form-group">
-            <label for="ChequeNo">Cheque Number</label>
-            <InputText id="ChequeNo" class="form-control" @bind-Value="donation.ChequeNo" />
-            <ValidationMessage For="@(() => donation.ChequeNo)" />
-        </div>
-
-        <div class="form-group">
-            <label for="ChequeDate">Cheque Date</label>
-            <InputDate id="ChequeDate" class="form-control" @bind-Value="donation.ChequeDate" />
-            <ValidationMessage For="@(() => donation.ChequeDate)" />
-        </div>
-    }
-    <div class="col-md-6">
-        <label for="Currency">Currency</label>
-        <InputSelect id="Currency" class="form-control" @bind-Value="donation.Currency">
-            <option value="">-- Select Currency --</option>
-                <option value="PKR">PKR</option>
-                <option value="USD">USD</option>
-            <option value="EUR">EUR</option>
-            <option value="INR">INR</option>
-        </InputSelect>
-    </div>
-
-        <div class="col-md-6">
-        <label for="Amount">Amount</label>
-        <InputNumber id="Amount" class="form-control" @bind-Value="donation.Amount" />
-    </div>
-        <div class="col-md-6">
-            <label for="Reference">Reference</label>
-            <InputText id="Reference" class="form-control" @bind-Value="donation.Reference" />
-        </div>
-
-        <div class="col-md-4">
-            <label for="Remarks">Remarks</label>
-        <InputTextArea id="Remarks" class="form-control" @bind-Value="donation.Remarks" />
-    </div>
-    </div>
-
-    <button type="submit" class="btn btn-primary" onclick="/DonationList" style="text-align:center; margin-bottom: 20px;">Save</button>
-    <button type="button" @onclick="SaveDonation" class="btn btn-success">Save Data</button>
-    <button type="submit" class="btn btn-primary" onclick="Submit">Save</button>
-
-</EditForm>
-
 @code {
 
     private Donation donation = new Donation();
-    
-    [Inject]
-    public DonationList DonationList { get; set; }
-
-    [Inject]
-    public DonationService DonationService { get; set; }
-
-    [Inject]
-    public NavigationManager Navigation { get; set; }
-
-    private void HandleValidSubmit()
-    {
-        //DonationService.AddDonation(donation);
-        Navigation.NavigateTo("/DonationList");
-    }
-
-
-    public class Donation
-    {
-        public int DonationId { get; set; }
-        public int DonorId { get; set; }
-        public int DonationTypeId { get; set; }
-        public int CurrencyId { get; set; }
-        public int PaymentModeId { get; set; }
-
-        public string Rec_No { get; set; }
-        public DateTime Rec_Date { get; set; }
-        public string DonorName { get; set; }
-
-        [EmailAddress(ErrorMessage = "Enter a valid Email address.")]
-        public string Email { get; set; }
-
-        [Phone(ErrorMessage = "Enter a valid Phone number.")] 
-        public string PhoneNumber { get; set; }
-        
-        public string Reference { get; set; }
-        public string DonationType { get; set; }
-
-        [Required(ErrorMessage = "Payment mode is required.")] 
-        public string PaymentMode { get; set; }
-        
-        public string ChequeNo { get; set; }
-        public DateTime ChequeDate { get; set; }
-        
-        public string Currency { get; set; }
-        public decimal Amount { get; set; }
-        public string Remarks { get; set; }
-    }
-    private void Model2Row()
-    {
-        MyRow["DonationID"] = donation.DonationId;
-        MyRow["DonorID"] = donation.DonorId;
-        MyRow["DonationTypeID"] = donation.DonationTypeId;
-        MyRow["CurrencyID"] = donation.CurrencyId;
-        MyRow["PaymentModeID"] = donation.PaymentModeId;
-        MyRow["Amount"] = donation.Amount;
-        MyRow["Rec_Date"] = donation.Rec_Date;
-    }
+    public DonationList DonationList { get; set; } = new();
+    public DonationService DonationService { get; set; } = new();
     private DataRow MyRow;
     private string MyMessage;
+    private DataTable DonationTable;
+    public TableClass tb_donation = new("[Donation]");
+    public DataTable donate;
+    public string TableName = "Donation";
+
+    public void HandleValidSubmit()
+    {
+        //DonationService.AddDonation(donation);
+        NavManager.NavigateTo("/DonationList");
+    }
+
+
+
+    protected override void OnInitialized()
+    {
+        if (ID.Length == 0) { ID = string.Empty; }
+        MyRow = TableClass.GetRow(TableName, ID);
+        donation = new();
+
+        if (MyRow != null)
+        {
+            if (MyRow["ID"] != DBNull.Value)
+            {
+                donation = new()
+                    {
+                        ID = (int)MyRow["ID"],
+                        DonorId = (int)MyRow["DonorId"],
+                        DonorName = (string)MyRow["Name"],
+                    DonationTypeId = (int)MyRow["DonationTypeID"],
+                    Reference = (string)MyRow["Reference"],
+                        DonationType = (string)MyRow["DonationType"],
+                        PaymentModeId = (int)MyRow["PaymentModeId"],
+                        PaymentMode = (string)MyRow["PaymentMode"],
+                        ChequeNo = (string)MyRow["ChequeNo"],
+                        CurrencyId = (int)MyRow["CurrencyId"],
+                        Currency = (string)MyRow["Currency"],
+                        Amount = (decimal)MyRow["Amount"],
+                        Remarks = (string)MyRow["Remarks"],
+                        Email = (string)MyRow["Email"],
+                        PhoneNumber = (string)MyRow["Phone Number"],
+                        Status = (string)MyRow["Status"],
+                        Rec_No = (int)MyRow["Rec_No"],
+                        Rec_Date = (DateTime)MyRow["Rec_Date"]
+
+                    };
+
+            }
+        }
+    }
+
+    private DataTable GetDonation()
+    {
+        tb_donation = new("Donation");
+        tb_donation.MyDataView.RowFilter = $"[ID] = '{donation.ID}'";
+        if (tb_donation.MyDataView.Count > 0)
+        {
+            return tb_donation.MyDataView.ToTable();
+        }
+        return tb_donation.MyDataTable.Clone();
+    }
+
+    private void Model2Row()
+    {
+    
+        MyRow = DonationTable.NewRow();
+        MyRow["DonationID"] = donation.ID;
+        MyRow["DonorID"] = donation.DonorId;
+        MyRow["Name"] = donation.DonorName;
+        MyRow["DonationTypeID"] = donation.DonationTypeId;
+        MyRow["Reference"] = donation.Reference;
+        MyRow["DonationType"] = donation.DonationType;
+        MyRow["PaymentModeID"] = donation.PaymentModeId;
+        MyRow["PaymentMode"] = donation.PaymentMode;
+        MyRow["ChequeNo"] = donation.ChequeNo;
+        MyRow["ChequeDate"] = donation.ChequeDate;
+        MyRow["CurrencyID"] = donation.CurrencyId;
+        MyRow["Currency"] = donation.Currency;
+        MyRow["Amount"] = donation.Amount;
+        MyRow["Remarks"] = donation.Remarks;
+        MyRow["Gmail"] = donation.Email;
+        MyRow["Phone Number"] = donation.PhoneNumber;
+        MyRow["Status"] = donation.Status;
+        MyRow["Rec_No"] = donation.Rec_No;
+        MyRow["Rec_Date"] = donation.Rec_Date;
+    }
+
 
 
     private void SaveDonation()
     {
         Model2Row();
         string _TableName = MyRow.Table.TableName;
-        long _DonationID = (long)MyRow["DonationID"];
+        long _ID = (long)MyRow["ID"];
         int _Effected;
         TableClass _Table = new("Donation");
         var _RecDate = ((DateTime)MyRow["Rec_Date"]).ToString("yyyy-MM-dd");
         var _Amount = ((decimal)MyRow["Amount"]).ToString("###,###,###.##");
 
-        string _Filter = $"[DonationID]={_DonationID}";
+        string _Filter = $"[ID]={_ID}";
         _Table.MyDataView.RowFilter = _Filter;
 
-        if (_Table.MyDataView.Count == 1)  
+        if (_Table.MyDataView.Count == 1)
         {
             var _Command = new SQLiteCommand(ConnectionClass.GetConnected());
             var _Text = new StringBuilder();
@@ -196,7 +132,7 @@
             _Text.Append($"[PaymentModeID]={MyRow["PaymentModeID"]}, ");
             _Text.Append($"[Amount]={MyRow["Amount"]}, ");
             _Text.Append($"[Rec_Date]='{_RecDate}' ");
-            _Text.Append($"WHERE [DonationID]={_DonationID}");
+            _Text.Append($"WHERE [DonationID]={_ID}");
 
             _Command = new(_Text.ToString(), ConnectionClass.GetConnected());
             _Effected = _Command.ExecuteNonQuery();
@@ -208,10 +144,10 @@
         }
         else
         {
-            var _MAXID = (long)_Table.MyDataTable.Compute("MAX(DonationID)", "") + 1;
+            var _MAXID = (long)_Table.MyDataTable.Compute("MAX(ID)", "") + 1;
             var _Command = new SQLiteCommand(ConnectionClass.GetConnected());
             var _Text = new StringBuilder();
-            _Text.Append($"INSERT INTO [{_TableName}] (DonationID, DonorID, DonationTypeID, CurrencyID, PaymentModeID, Amount, DonationDate) ");
+            _Text.Append($"INSERT INTO [{_TableName}] (ID, DonorID, DonationTypeID, CurrencyID, PaymentModeID, Amount, DonationDate) ");
             _Text.Append($"VALUES ({_MAXID}, {MyRow["DonorID"]}, {MyRow["DonationTypeID"]}, {MyRow["CurrencyID"]}, ");
             _Text.Append($"{MyRow["PaymentModeID"]}, {MyRow["Amount"]}, '{_RecDate}')");
 
@@ -230,11 +166,119 @@
                 MyMessage = e.Message;
             }
         }
-}
+    }
     private void Submit()
     {
-        var a = donation.DonationId;
+        var a = donation.ID;
     }
 
-    
+    private void Back()
+    {
+        NavManager.NavigateTo("/DonationList");
+    }
+
+
 }
+
+<EditForm Model="@donation" OnSubmit="Submit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="row mt-2">
+        <div class="col-md-6">
+            <label for="Rec_No">Receipt Number</label>
+            <InputNumber id="Rec_No" class="form-control" @bind-Value="donation.Rec_No" />
+        </div>
+        <div class="col-md-6">
+            <label for="Rec_Date">Receipt Date</label>
+            <InputDate id="Rec_Date" class="form-control" @bind-Value="donation.Rec_Date" />
+        </div>
+        <div class="col-md-6">
+            <label for="Email">Email </label>
+            <InputText id="Email" class="form-control" @bind-Value="donation.Email" />
+            <ValidationMessage For="@(() => donation.Email)" />
+        </div>
+
+        <div class="col-md-6">
+            <label for="Phone_Number">Phone Number</label>
+            <InputText id="Phone_Number" class="form-control" @bind-Value="donation.PhoneNumber" />
+        </div>
+
+        <div class="col-md-6">
+            <label for="DonationType">Donation Type</label>
+            <InputSelect id="DonationType" class="form-control" @bind-Value="donation.DonationType">
+                <option value="">-- Select Donation Type --</option>
+                <option value="Cash">Food</option>
+                <option value="Cash">Masjid Fund</option>
+                <option value="Cash">Zakat</option>
+                <option value="Cash">Atiyat</option>
+                <option value="Cash">Sadaqah</option>
+            </InputSelect>
+        </div>
+
+        <div class="col-md-6">
+            <label for="PaymentMode">Payment Mode</label>
+            <InputSelect id="PaymentMode" class="form-control" @bind-Value="donation.PaymentMode">
+                <option value="">-- Select Payment Mode --</option>
+                <option value="Bank">Bank Transfer</option>
+                <option value="Cash">Cash</option>
+                <option value="Cheque">Cheque</option>
+            </InputSelect>
+        </div>
+        @if (donation.PaymentMode == "Cheque")
+        {
+            <div class="form-group">
+                <label for="ChequeNo">Cheque Number</label>
+                <InputText id="ChequeNo" class="form-control" @bind-Value="donation.ChequeNo" />
+                <ValidationMessage For="@(() => donation.ChequeNo)" />
+            </div>
+
+            <div class="form-group">
+                <label for="ChequeDate">Cheque Date</label>
+                <InputDate id="ChequeDate" class="form-control" @bind-Value="donation.ChequeDate" />
+                <ValidationMessage For="@(() => donation.ChequeDate)" />
+            </div>
+        }
+        <div class="col-md-6">
+            <label for="Currency">Currency</label>
+            <InputSelect id="Currency" class="form-control" @bind-Value="donation.Currency">
+                <option value="">-- Select Currency --</option>
+                <option value="PKR">PKR</option>
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="INR">INR</option>
+            </InputSelect>
+        </div>
+
+        <div class="col-md-6">
+            <label for="Amount">Amount</label>
+            <InputNumber id="Amount" class="form-control" @bind-Value="donation.Amount" />
+        </div>
+        <div class="col-md-6">
+            <label for="Reference">Reference</label>
+            <InputText id="Reference" class="form-control" @bind-Value="donation.Reference" />
+        </div>
+
+        <div class="col-md-4">
+            <label for="Remarks">Remarks</label>
+            <InputTextArea id="Remarks" class="form-control" @bind-Value="donation.Remarks" />
+        </div>
+    </div>
+
+    <div class="=container">
+        <div class="row">
+            <div class="col-3">
+                <button type="submit" class="btn btn-primary" @onclick="Back" style="text-align:center; margin-bottom: 20px;">Save</button>
+            </div>
+            <div class="col-3">
+                <button type="button" @onclick="SaveDonation" class="btn btn-success">Save Data</button>
+            </div>
+            <div class="col-3">
+                <button type="submit" class="btn btn-primary" @onclick="Submit">Save</button>
+            </div>
+        </div>
+    </div>
+
+</EditForm>
+
+
