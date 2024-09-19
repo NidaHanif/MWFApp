@@ -1,84 +1,4 @@
-﻿@* <div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">MWF</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
-
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </div>
-    </nav>
-</div>
-
-@code {
-    private bool collapseNavMenu = true;
-
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-}
- *@
-
-@*<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Navbar</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
-                </li>
-                <li><button href="/Galary" class="btn btn-link" >Galary</button></li>
-                
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Dropdown
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-
-                        <li><a class="dropdown-item" href="\Galary">Ga</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                </li>
-            </ul>
-            <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
-        </div>
-    </div>
-</nav>*@
-
+﻿@inject NavigationManager NavManager;
 
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow p-0">
     <div class="container-fluid" style="background: rgb(200, 180, 140); color:rgb(34, 60, 97);">
@@ -87,25 +7,33 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+            
+            <img src="./GalaryPic/welfare (4).jpg" style="border-radius: 40%;" height="120" width="50" alt="" />
             <ul class="navbar-nav flex-grow-1" style="display: contents; margin-top:4px; margin-bottom:4px">
-                <img src="./GalaryPic/welfare (4).jpg" style="border-radius: 40%; height:" 120vh"; width="50px" ; alt="" />
-
                 <li class="nav-item">
-                    <a href="./" class="nav-link active">Home</a>
+                    <button type="submit" class="btn-Menu" id="btn-account" @onclick="Home">Home</button>
+                    @* <a href="./" class="nav-link active">Home</a> *@
                 </li>
                 <li class="nav-item">
-                    <a href="/About" class="nav-link active">About</a>
-
-                </li>
-                <li class="nav-item">
-                    <a href="/Gallery" class="nav-link active">Gallery</a>
+                    <button type="submit" class="btn-Menu" id="btn-account" @onclick="About">About</button>
+                    @* <a href="/About" class="nav-link active">About</a> *@
 
                 </li>
                 <li class="nav-item">
-                    <a href="/Review" class="nav-link active">Review</a>
+                    <button type="submit" class="btn-Menu" id="btn-account" @onclick="Gallery">Gallery</button>
+                   @*  <a href="/Gallery" class="nav-link active">Gallery</a> *@
                 </li>
                 <li class="nav-item">
-                    <a href="/ContactUs" class="nav-link active">Contact Us</a>
+                    <button type="submit" class="btn-Menu" id="btn-account" @onclick="Review">Review</button>
+                    @* <a href="/Review" class="nav-link active">Review</a> *@
+                </li>
+                <li class="nav-item">
+                    <button type="submit" class="btn-Menu" id="btn-account" @onclick="Receipt">Receipt</button>
+                    @* <a href="/Receipt" class="nav-link active">Receipt</a> *@
+                </li>
+                <li class="nav-item">
+                    <button type="submit" class="btn-Menu" id="btn-account" @onclick="Contact">Contact us</button>
+                    @* <a href="/ContactUs" class="nav-link active">Contact Us</a> *@
                 </li>
             </ul>
             <button type="button" class="btn btn-primary" onclick="window.location.href='';">
@@ -118,3 +46,40 @@
         </div>
     </div>
 </nav>
+
+
+
+@code{
+    public void Home() { NavManager.NavigateTo($"/", true); }
+    public void About() { NavManager.NavigateTo($"/About", true); }
+    public void Gallery() { NavManager.NavigateTo($"/Gallery", true); }
+    public void Review() { NavManager.NavigateTo($"/Review", true); }
+    public void Receipt() { NavManager.NavigateTo($"/Receipt", true); }
+    public void Contact() { NavManager.NavigateTo($"/Contact", true); }
+
+
+
+
+}
+
+<style>
+    .btn-Menu {
+        background-image: linear-gradient(#0dccea, #0d70ea);
+        border: 0;
+        border-radius: 4px;
+        box-shadow: rgba(0, 0, 0, .3) 0 5px 15px;
+        box-sizing: border-box;
+        color: #fff;
+        cursor: pointer;
+        font-family: Montserrat, sans-serif;
+        font-size: .9em;
+        margin: 5px;
+        padding: 10px 15px;
+        text-align: center;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+    }
+
+
+</style>
