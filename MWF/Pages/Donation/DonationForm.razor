@@ -24,26 +24,58 @@
     public TableClass tb_donation = new("[Donation]");
     public DataTable donate;
     public string TableName = "Donation";
-
+    private string ID = string.Empty;
     public void HandleValidSubmit()
     {
         //DonationService.AddDonation(donation);
         NavManager.NavigateTo("/DonationList");
     }
 
+    public class TableClass
+    {
+        public string TableName { get; set; }
+        public DataView MyDataView { get; set; }
+        public DataTable MyDataTable { get; set; }
 
+        public TableClass(string tableName)
+        {
+            TableName = tableName;
+        }
+
+        public DataRow GetRow(string tableName, string id)
+        {
+            DataRow[] rows = MyDataTable.Select($"ID = '{id}'");
+            return rows.FirstOrDefault();
+        }
+    }
+    public DataRow GetRow(string tableName, string id)
+    {
+        string query = $"SELECT * FROM [vew_Donation] WHERE ID = @ID";
+        using (SQLiteCommand cmd = new SQLiteCommand(query, ConnectionClass.GetConnected()))
+        {
+            cmd.Parameters.AddWithValue("@ID", id);
+            using (SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd))
+            {
+                DataTable dt = new DataTable();
+                adapter.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    return dt.Rows[0]; 
+                }
+            }
+        }
+        return null; 
+    }
 
     protected override void OnInitialized()
     {
         if (ID.Length == 0) { ID = string.Empty; }
-        MyRow = TableClass.GetRow(TableName, ID);
+        MyRow = tb_donation.GetRow(TableName, ID);
         donation = new();
 
         if (MyRow != null)
         {
-            if (MyRow["ID"] != DBNull.Value)
-            {
-                donation = new()
+            donation = new Donation()
                     {
                         ID = (int)MyRow["ID"],
                         DonorId = (int)MyRow["DonorId"],
@@ -68,7 +100,6 @@
 
             }
         }
-    }
 
     private DataTable GetDonation()
     {

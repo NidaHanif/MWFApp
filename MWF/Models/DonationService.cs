@@ -33,8 +33,7 @@ public class DonationService
                     ID = (int)_Row["ID"],
                     Rec_No = (int)_Row["Rec_No"],
                     Rec_Date = (DateTime)_Row["Rec_Date"],
-                    Amount = (decimal)_Row["Amount"],
-                    DonorName = (string)_Row["Name"]
+                    Amount = (decimal)_Row["Amount"]
                 };
 
                 donations.Add(_Donation);
