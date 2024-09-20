@@ -1,8 +1,108 @@
 ﻿@page "/About"
 
-<h3>About</h3>
+<h3></h3>
 
 @code {
 
 }
+<style>
+    .about-us {
+    min-height: 100vh;
+    padding: 80px 0px;
+    }
+.container {
+    max-width: 1200px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 30px;
+    border-radius: 10px;
+    margin: 0px auto;
+}
 
+.about-image {
+    width: 50%;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+    .about-image img {
+        display: block;
+        width: 100%;
+        height: auto;
+        transition: transform 0.3s ease;
+    }
+
+    .about-image:hover img {
+        transform: scale(1.1);
+    }
+
+.about-content {
+    width: 50%;
+    margin-left: 40px;
+}
+
+    .about-content h2 {
+        color: black;
+        font-size: 32px;
+        margin-bottom: 20px;
+    }
+
+    .about-content p {
+        color: aliceblue;
+        font-size: 17px;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+.social-links {
+    margin-bottom: 20px;
+}
+
+    .social-links a {
+        display: inline-block;
+        margin-right: 10px;
+        color: #c7d5e0;
+        font-size: 18px;
+        transition: color 0.3s ease;
+    }
+
+        .social-links a:hover {
+            color: #fff;
+        }
+
+.btn-L {
+    font-size: 17px;
+    display: inline-block;
+    padding: 12px 16px;
+    background-color: rgb(34, 60, 97);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+        .btn-L i {
+        margin-right: 5px;
+    }
+
+        .btn-L:hover {
+        background-color: lightgoldenrodyellow;
+    }
+    </style>
+<div class="about-us">
+    <div class="container">
+        <div class="about-image">
+            <img src="/GalaryPic/Mumtaz welfare 6.jpg" alt="">
+        </div>
+        <div class="about-content">
+            <h2 style="position: center;">Welcome to the <br><span style="font-weight: bold;">Mumtaz Welfare Foundation</span></h2>
+            <p>
+                The Largest NGO 
+                Mumtaz Welfare is on the ground and already working with local communities to assess how best to support underprivileged families in more than areas of day to day lives.
+            </p>
+            <a href="/Gallery" class="btn-L"><i class="fas fa-arrow-right"></i>Learn More
+            <svg stroke="currentColor" fill="none" stroke-width="0" viewBox="0 0 24 24" style="margin-left: 10px;" height="18" width="18" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg></a>
+        </div>
+    </div>
+</div>
