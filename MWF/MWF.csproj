@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Pages\Donate\" />
     <Folder Include="wwwroot\GalaryPic\food\" />
     <Folder Include="wwwroot\GalaryPic\well\" />
     <Folder Include="wwwroot\GalaryPic\pump\" />

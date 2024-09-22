@@ -1,92 +1,22 @@
-﻿@* <div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">MWF</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</div>
-
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </div>
-    </nav>
-</div>
-
+﻿
 @code {
     private bool collapseNavMenu = true;
 
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
     }
 }
- *@
-
-@*<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Navbar</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
-                </li>
-                <li><button href="/Galary" class="btn btn-link" >Galary</button></li>
-                
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Dropdown
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-
-                        <li><a class="dropdown-item" href="\Galary">Ga</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                </li>
-            </ul>
-            <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
-        </div>
-    </div>
-</nav>*@
-
 
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow p-0">
     <div class="container-fluid" style="background: rgb(200, 180, 140); color:rgb(34, 60, 97);">
         <a class="navbar-brand" asp-page="/Index"></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+        <div class="collapse navbar-collapse  justify-content-between">
             <ul class="navbar-nav flex-grow-1" style="display: contents; margin-top:4px; margin-bottom:4px">
                 <img src="./GalaryPic/welfare (4).jpg" style="border-radius: 40%; height:" 120vh"; width="50px" ; alt="" />
 
@@ -117,6 +47,7 @@
             <a class="btn btn-danger" href="/DonationList" role="button">
                 Reciept
             </a>
+
         </div>
     </div>
 </nav>    

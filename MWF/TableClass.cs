@@ -21,4 +21,10 @@ public class TableClass
 
         MyDataView = new DataView(MyDataTable);
     }
+
+    public DataRow GetRow(string tableName, string id)
+    {
+        DataRow[] rows = MyDataTable.Select($"ID = '{id}'");
+        return rows.FirstOrDefault();
+    }
 }
