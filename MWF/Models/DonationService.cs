@@ -65,6 +65,7 @@ namespace MWF.Models
         public Donation SelectDonation(int ID)
         {
             Donation? _Donation = DonationList.FirstOrDefault(a => a.ID == ID);
+            SelectedDonation = _Donation ?? NewDonation();
             return _Donation ?? NewDonation();
         }
 
@@ -73,6 +74,15 @@ namespace MWF.Models
             if (ID > 0)
             {
                 SelectedDonation = DonationList.FirstOrDefault(a => a.ID == ID) ?? NewDonation();
+            }
+        }
+        public void DeleteDonation(int ID)
+        {
+            if (ID > 0)
+            {
+                SelectedDonation = DonationList.FirstOrDefault(a => a.ID == ID) ?? NewDonation();
+                DonationList.Remove(SelectedDonation);
+                SelectedDonation = DonationList.First() ?? NewDonation();
             }
         }
         public void InsertDonation(Donation _Donation)
@@ -140,6 +150,14 @@ namespace MWF.Models
             return true;
         }
         #endregion
+
+        #region Print
+        public void PrintDonation(int ID)
+        {
+            //  Make code here to print the donation receipt
+        }
+        #endregion
+
     }
 
     public class Donation

@@ -24,6 +24,7 @@ h5 {
 body {
     background: rgb(202, 178, 130);
     margin-bottom: 60px;
+    font-family: 'Roboto', sans-serif; /* Set Roboto as the default font */
 }
 .myLink {
     color: black !important;

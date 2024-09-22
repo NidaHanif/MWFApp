@@ -1,5 +1,5 @@
 ﻿@page "/DonationList"
-@inject NavigationManager _navigationManager
+@inject NavigationManager NavManager
 
 @using MWF.Pages;
 @using MWF.Models;
@@ -8,19 +8,57 @@
 @using System.Data.SQLite;
 
 
-<h3>Donation List</h3>
+<h4>Donation List</h4>
 
 <style>
-    .donation
-    {
-        height:50px;
-        width:100%;
-        background-color:floralwhite;
+    .donation {
+        height: 50px;
+        width: 100%;
+        background-color: floralwhite;
     }
 
     body {
         margin: 0;
         padding: 0;
+    }
+
+    /* Common styles for all action buttons */
+    .action-btn {
+        padding: 1px 2px; /* Reduced padding for tighter buttons */
+        margin: 0 2px; /* Slight margin between buttons */
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+
+        .action-btn:hover {
+            background-color: #f0f0f0;
+        }
+
+    .edit-btn i {
+        color: #007bff; /* Blue for edit */
+    }
+
+    .delete-btn i {
+        color: red; /* Red for delete */
+    }
+
+    .print-btn i {
+        color: #28a745; /* Green for print */
+    }
+
+    .action-btn i {
+        margin-right: 3px;
+    }
+
+    .add-btn i {
+        color: #17a2b8; /* Teal color for add */
+    }
+
+    .add-btn:hover {
+        background-color: #e0f7fa; /* Light teal background on hover */
     }
 
 </style>
@@ -42,88 +80,47 @@
             <th>Receipt Date</th>
             <th>Donor Name</th>
             <th>Amount</th>
-            
-            <th><a class="btn btn-light" style="width:20%" href="/DonationForm" role="button"><i class="bi bi-plus me-2"></i>
-            
-            </a>
+
+            <th>
+                <button class="action-btn add-btn" @onclick="()=>GoDonation(0)">
+                    <i class="bi bi-plus-circle-fill"></i> <!-- Icon for Add -->
+                </button>
             </th>
         </tr>
     </thead>
     <tbody>
-     @*    @foreach (var item in Model.donations)
+        @foreach (var item in Model.DonationList)
         {
             <tr>
                 <td>@item.Rec_No</td>
                 <td>@item.Rec_Date.ToString("yyyy-MM-dd")</td>
                 <td>@item.TitleDonor</td>
-                <td>@item.Amount.ToString("###,###,###.##")</td>
+                <td style="align-content:end">@item.Amount.ToString("###,###,###.##")</td>
                 <td>
-                    <button @onclick="() => Model.UpdateDonation(item.ID)"><i class="bi bi-pencil-fill me-2"></i></button>
-                    <button @onclick="() => Model.DeleteDonation(item.ID)"><i class="bi bi-trash3" style=" color: red;margin-right:5px"></i></button>
-                    <button @onclick="()== Model.PrintDonation(item.ID)"><i class="bi bi-printer-fill me-2"></i></button>
+                    <button class="action-btn edit-btn" @onclick="()=>GoDonation(item.ID)">
+                        <i class="bi bi-pencil-fill"></i>
+                    </button>
+                    <button class="action-btn delete-btn" @onclick="() => Model.DeleteDonation(item.ID)">
+                        <i class="bi bi-trash3"></i>
+                    </button>
+                    <button class="action-btn print-btn" @onclick="()=> Model.PrintDonation(item.ID)">
+                        <i class="bi bi-printer-fill"></i>
+                    </button>
                 </td>
-                <a class="btn btn-danger" style="width:20%" href=""><i class="bi bi-pencil-fill me-2"></i></a>
-                    <button type="submit" @onclick="() => Model.DeleteDonation(item.ID)" class="btn btn-dangerous"><i class="bi bi-trash3" style=" color: red;margin-right:5px"></i></button>
-                    <a class="btn btn-secondary" style="width:20%" href=""><i class="bi bi-printer-fill me-2"></i></a>
-                </td> 
             </tr>
-        } *@
+        }
     </tbody>
 </table>
 
 @code {
-    // public DonationService DonationService { get; set; } = new();
-
-    // private void DonationEdit(int ID)
-    // {
-    //     var _Text = $"SELECT * FROM [vew_Donation] WHERE [ID]={ID}";
-    //     var _Command = new SQLiteCommand(_Text, ConnectionClass.GetConnected());
-    //     var _Adapter = new SQLiteDataAdapter(_Command);
-    //     var _DataSet = new DataSet();
-    //     var _Table = new DataTable();
-
-
-    //     _Adapter.Fill(_DataSet, "Donation");
-    //     if(_DataSet.Tables.Count>0)
-    //     {
-    //         _Table = _DataSet.Tables[0];
-    //     }
-    //     if(_Table.Rows.Count > 0)
-    //     {
-    //         var _DataRow = _Table.Rows[0];
-    //     }
-
-
-
-
-
-    // }
-    private string MyMessage { get; set; } = string.Empty;
-
-    // private void DonationDelete(long ID)
-    // {
-    //     if (ID > 0)
-    //     {
-    //         var TextDelete = "DELETE FROM [Donation] WHERE [ID] = @ID";
-    //         var SQLCommand = new SQLiteCommand(TextDelete, ConnectionClass.GetConnected());
-    //         SQLCommand.Parameters.AddWithValue("@ID", ID);
-
-    //         var effected = SQLCommand.ExecuteNonQuery();
-    //         if (effected > 0)
-    //         {
-    //             // Navigate to donation list after deletion
-    //             _navigationManager.NavigateTo("/DonationList");
-    //             MyMessage = "Donation has been deleted successfully.";
-    //         }
-    //         else
-    //         {
-    //             MyMessage = "Donation not deleted.";
-    //         }
-    //     }
-    //     else
-    //     {
-    //         MyMessage = "Donation ID must be greater than zero.";
-    //     }
-    // }
     
+
+
+
+
+   
+    
+
+   
+
 }

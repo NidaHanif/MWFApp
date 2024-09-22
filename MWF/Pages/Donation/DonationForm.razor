@@ -1,4 +1,5 @@
 ﻿@page "/DonationForm"
+@page "/DonationForm/{ID:int}"
 @inject NavigationManager NavManager;
 @using System.ComponentModel.DataAnnotations;
 @using MWF.Pages;
@@ -11,11 +12,13 @@
 @using System.Text;
 
 @code {
-    public DonationService Model { get; set; } = new();
-    public StringBuilder MyMessages { get; set; } = new();
+    [Parameter] public int ID { get; set; }
+    public DonationService Model { get; set; }
+    public StringBuilder MyMessages { get; set; }
 
     public void HandleValidSubmit()
     {
+
         NavManager.NavigateTo("/DonationList");
     }
 
@@ -23,13 +26,18 @@
 
     protected override void OnInitialized()
     {
+        Model = new();
+        if (ID > 0)
+        {
+            Model.SelectDonation(ID);
+        }
     }
 
     private void SaveDonation()
     {
         var RowSave = Model.Donation2Row(Model.SelectedDonation);
         TableClass _Table = new("Donation");
-        if(_Table.Save(RowSave))
+        if (_Table.Save(RowSave))
         {
             // Show Message Record has been saved
         }
@@ -110,109 +118,202 @@
 
 }
 
+
+<style>
+    .text-center {
+        width: 100%; /* Make the container full width */
+        text-align: center; /* Center text horizontally */
+        margin: 0 auto; /* Auto margins for centering in block-level elements */
+    }
+
+    h2 {
+        display: inline-block; /* Allows padding and margins to be applied more effectively */
+    }
+
+</style>
+
+<h2 class="text-center">DONATION RECEIPT</h2>
+
+
 <EditForm Model="@Model" OnSubmit="Submit">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    
-
-
-
-
-@* 
-    <div class="row mt-2">
-        <div class="col-md-6">
-            <label for="Rec_No">Receipt Number</label>
-            <InputNumber id="Rec_No" class="form-control" @bind-Value="donation.Rec_No" />
-        </div>
-        <div class="col-md-6">
-            <label for="Rec_Date">Receipt Date</label>
-            <InputDate id="Rec_Date" class="form-control" @bind-Value="donation.Rec_Date" />
-        </div>
-        <div class="col-md-6">
-            <label for="Email">Email </label>
-            <InputText id="Email" class="form-control" @bind-Value="donation.Email" />
-            <ValidationMessage For="@(() => donation.Email)" />
-        </div>
-
-        <div class="col-md-6">
-            <label for="Phone_Number">Phone Number</label>
-            <InputText id="Phone_Number" class="form-control" @bind-Value="donation.PhoneNumber" />
-        </div>
-
-        <div class="col-md-6">
-            <label for="DonationType">Donation Type</label>
-            <InputSelect id="DonationType" class="form-control" @bind-Value="donation.DonationType">
-                <option value="">-- Select Donation Type --</option>
-                <option value="Cash">Food</option>
-                <option value="Cash">Masjid Fund</option>
-                <option value="Cash">Zakat</option>
-                <option value="Cash">Atiyat</option>
-                <option value="Cash">Sadaqah</option>
-            </InputSelect>
-        </div>
-
-        <div class="col-md-6">
-            <label for="PaymentMode">Payment Mode</label>
-            <InputSelect id="PaymentMode" class="form-control" @bind-Value="donation.PaymentMode">
-                <option value="">-- Select Payment Mode --</option>
-                <option value="Bank">Bank Transfer</option>
-                <option value="Cash">Cash</option>
-                <option value="Cheque">Cheque</option>
-            </InputSelect>
-        </div>
-        @if (donation.PaymentMode == "Cheque")
-        {
-            <div class="form-group">
-                <label for="ChequeNo">Cheque Number</label>
-                <InputText id="ChequeNo" class="form-control" @bind-Value="donation.ChequeNo" />
-                <ValidationMessage For="@(() => donation.ChequeNo)" />
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-floating mb-3">
+                    <InputNumber @bind-Value="Model.SelectedDonation.Rec_No" class="form-control" id="txtRecNo" placeholder="Receipt No."></InputNumber>
+                    <label for="txtRecNo">Receipt No.</label>
+                </div>
             </div>
-
-            <div class="form-group">
-                <label for="ChequeDate">Cheque Date</label>
-                <InputDate id="ChequeDate" class="form-control" @bind-Value="donation.ChequeDate" />
-                <ValidationMessage For="@(() => donation.ChequeDate)" />
+            <div class="col-md-3">
+                <div class="form-floating mb-3">
+                    <InputDate @bind-Value="Model.SelectedDonation.Rec_Date" class="form-control" id="txtRecDate" placeholder="Receipt Date"></InputDate>
+                    <label for="txtRecDate">Receipt Date</label>
+                </div>
             </div>
-        }
-        <div class="col-md-6">
-            <label for="Currency">Currency</label>
-            <InputSelect id="Currency" class="form-control" @bind-Value="donation.Currency">
-                <option value="">-- Select Currency --</option>
-                <option value="PKR">PKR</option>
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
-                <option value="INR">INR</option>
-            </InputSelect>
+            <div class="col-md-3">
+                <div class="form-floating mb-3 ">
+                    <InputText @bind-Value="Model.SelectedDonation.Reference" class="form-control" id="txtRef" placeholder="Reference"></InputText>
+                    <label for="txtRef">Reference</label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-floating mb-3 ">
+                    <InputNumber @bind-Value="Model.SelectedDonation.DonorID" class="form-control" id="txtDonor" placeholder="Donar ID"></InputNumber>
+                    <label for="txtDonor">Donar</label>
+                </div>
+            </div>
         </div>
-
-        <div class="col-md-6">
-            <label for="Amount">Amount</label>
-            <InputNumber id="Amount" class="form-control" @bind-Value="donation.Amount" />
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-floating mb-3 ">
+                    <InputNumber @bind-Value="Model.SelectedDonation.DonationType" class="form-control" id="txtType" placeholder="Donation Type"></InputNumber>
+                    <label for="txtType">Donation Type</label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-floating mb-3 ">
+                    <InputNumber @bind-Value="Model.SelectedDonation.PaymentMode" class="form-control" id="txtMode" placeholder="Mode of Payment"></InputNumber>
+                    <label for="txtMode">Payment Mode</label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-floating mb-3 ">
+                    <InputNumber @bind-Value="Model.SelectedDonation.Currency" class="form-control" id="txtCurrency" placeholder="Currency"></InputNumber>
+                    <label for="txtCurrency">Currency</label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-floating mb-3 ">
+                    <InputText @bind-Value="Model.SelectedDonation.ChequeNo" class="form-control" id="txtChqNo" placeholder="Cheque No"></InputText>
+                    <label for="txtChqNo">Cheque No. (if any)</label>
+                </div>
+            </div>
         </div>
-        <div class="col-md-6">
-            <label for="Reference">Reference</label>
-            <InputText id="Reference" class="form-control" @bind-Value="donation.Reference" />
-        </div>
-
-        <div class="col-md-4">
-            <label for="Remarks">Remarks</label>
-            <InputTextArea id="Remarks" class="form-control" @bind-Value="donation.Remarks" />
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-floating mb-3 ">
+                    <InputNumber @bind-Value="Model.SelectedDonation.Amount" class="form-control" id="txtAmount" placeholder="Amount"></InputNumber>
+                    <label for="txtAmount">Amount</label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-floating mb-3 ">
+                    <InputText @bind-Value="Model.SelectedDonation.Phone" class="form-control" id="txtPhone" placeholder="Cheque No"></InputText>
+                    <label for="txtPhone">Phone No.</label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-floating mb-3 ">
+                    <InputText @bind-Value="Model.SelectedDonation.Email" class="form-control" id="txtEmail" placeholder="Cheque No"></InputText>
+                    <label for="txtEmail">Email address</label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-floating mb-3 ">
+                    <InputText @bind-Value="Model.SelectedDonation.Remarks" class="form-control" id="txtRemarks" placeholder="Cheque No"></InputText>
+                    <label for="txtRemarks">Remarks</label>
+                </div>
+            </div>
         </div>
     </div>
 
+    @*
+    <div class="row mt-2">
+    <div class="col-md-6">
+    <label for="Rec_No">Receipt Number</label>
+    <InputNumber id="Rec_No" class="form-control" @bind-Value="donation.Rec_No" />
+    </div>
+    <div class="col-md-6">
+    <label for="Rec_Date">Receipt Date</label>
+    <InputDate id="Rec_Date" class="form-control" @bind-Value="donation.Rec_Date" />
+    </div>
+    <div class="col-md-6">
+    <label for="Email">Email </label>
+    <InputText id="Email" class="form-control" @bind-Value="donation.Email" />
+    <ValidationMessage For="@(() => donation.Email)" />
+    </div>
+
+    <div class="col-md-6">
+    <label for="Phone_Number">Phone Number</label>
+    <InputText id="Phone_Number" class="form-control" @bind-Value="donation.PhoneNumber" />
+    </div>
+
+    <div class="col-md-6">
+    <label for="DonationType">Donation Type</label>
+    <InputSelect id="DonationType" class="form-control" @bind-Value="donation.DonationType">
+    <option value="">-- Select Donation Type --</option>
+    <option value="Cash">Food</option>
+    <option value="Cash">Masjid Fund</option>
+    <option value="Cash">Zakat</option>
+    <option value="Cash">Atiyat</option>
+    <option value="Cash">Sadaqah</option>
+    </InputSelect>
+    </div>
+
+    <div class="col-md-6">
+    <label for="PaymentMode">Payment Mode</label>
+    <InputSelect id="PaymentMode" class="form-control" @bind-Value="donation.PaymentMode">
+    <option value="">-- Select Payment Mode --</option>
+    <option value="Bank">Bank Transfer</option>
+    <option value="Cash">Cash</option>
+    <option value="Cheque">Cheque</option>
+    </InputSelect>
+    </div>
+    @if (donation.PaymentMode == "Cheque")
+    {
+    <div class="form-group">
+    <label for="ChequeNo">Cheque Number</label>
+    <InputText id="ChequeNo" class="form-control" @bind-Value="donation.ChequeNo" />
+    <ValidationMessage For="@(() => donation.ChequeNo)" />
+    </div>
+
+    <div class="form-group">
+    <label for="ChequeDate">Cheque Date</label>
+    <InputDate id="ChequeDate" class="form-control" @bind-Value="donation.ChequeDate" />
+    <ValidationMessage For="@(() => donation.ChequeDate)" />
+    </div>
+    }
+    <div class="col-md-6">
+    <label for="Currency">Currency</label>
+    <InputSelect id="Currency" class="form-control" @bind-Value="donation.Currency">
+    <option value="">-- Select Currency --</option>
+    <option value="PKR">PKR</option>
+    <option value="USD">USD</option>
+    <option value="EUR">EUR</option>
+    <option value="INR">INR</option>
+    </InputSelect>
+    </div>
+
+    <div class="col-md-6">
+    <label for="Amount">Amount</label>
+    <InputNumber id="Amount" class="form-control" @bind-Value="donation.Amount" />
+    </div>
+    <div class="col-md-6">
+    <label for="Reference">Reference</label>
+    <InputText id="Reference" class="form-control" @bind-Value="donation.Reference" />
+    </div>
+
+    <div class="col-md-4">
+    <label for="Remarks">Remarks</label>
+    <InputTextArea id="Remarks" class="form-control" @bind-Value="donation.Remarks" />
+    </div>
+    </div>
+
     <div class="=container">
-        <div class="row">
-            <div class="col-3">
-                <button type="submit" class="btn btn-primary" @onclick="Back" style="text-align:center; margin-bottom: 20px;">Save</button>
-            </div>
-            <div class="col-3">
-                <button type="button" @onclick="SaveDonation" class="btn btn-success">Save Data</button>
-            </div>
-            <div class="col-3">
-                <button type="submit" class="btn btn-primary" @onclick="Submit">Save</button>
-            </div>
-        </div>
+    <div class="row">
+    <div class="col-3">
+    <button type="submit" class="btn btn-primary" @onclick="Back" style="text-align:center; margin-bottom: 20px;">Save</button>
+    </div>
+    <div class="col-3">
+    <button type="button" @onclick="SaveDonation" class="btn btn-success">Save Data</button>
+    </div>
+    <div class="col-3">
+    <button type="submit" class="btn btn-primary" @onclick="Submit">Save</button>
+    </div>
+    </div>
     </div> *@
 
 </EditForm>
