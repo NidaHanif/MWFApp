@@ -1,8 +1,5 @@
 ﻿@page "/DonationForm"
 @inject NavigationManager NavManager;
-
-<h3>Donation Form</h3>
-
 @using System.ComponentModel.DataAnnotations;
 @using MWF.Pages;
 @using MWF.Codes;
@@ -14,193 +11,95 @@
 @using System.Text;
 
 @code {
+    public DonationService Model { get; set; } = new();
+    public StringBuilder MyMessages { get; set; } = new();
 
-    private Donation donation = new Donation();
-    public DonationList DonationList { get; set; } = new();
-    public DonationService DonationService { get; set; } = new();
-    private DataRow MyRow;
-    private string MyMessage;
-    private DataTable DonationTable;
-    public TableClass tb_donation = new("[Donation]");
-    public DataTable donate;
-    public string TableName = "Donation";
-    private string ID = string.Empty;
     public void HandleValidSubmit()
     {
-        //DonationService.AddDonation(donation);
         NavManager.NavigateTo("/DonationList");
     }
 
-    public class TableClass
-    {
-        public string TableName { get; set; }
-        public DataView MyDataView { get; set; }
-        public DataTable MyDataTable { get; set; }
 
-        public TableClass(string tableName)
-        {
-            TableName = tableName;
-        }
-
-        public DataRow GetRow(string tableName, string id)
-        {
-            DataRow[] rows = MyDataTable.Select($"ID = '{id}'");
-            return rows.FirstOrDefault();
-        }
-    }
-    public DataRow GetRow(string tableName, string id)
-    {
-        string query = $"SELECT * FROM [vew_Donation] WHERE ID = @ID";
-        using (SQLiteCommand cmd = new SQLiteCommand(query, ConnectionClass.GetConnected()))
-        {
-            cmd.Parameters.AddWithValue("@ID", id);
-            using (SQLiteDataAdapter adapter = new SQLiteDataAdapter(cmd))
-            {
-                DataTable dt = new DataTable();
-                adapter.Fill(dt);
-                if (dt.Rows.Count > 0)
-                {
-                    return dt.Rows[0]; 
-                }
-            }
-        }
-        return null; 
-    }
 
     protected override void OnInitialized()
     {
-        if (ID.Length == 0) { ID = string.Empty; }
-        MyRow = tb_donation.GetRow(TableName, ID);
-        donation = new();
-
-        if (MyRow != null)
-        {
-            donation = new Donation()
-                    {
-                        ID = (int)MyRow["ID"],
-                        DonorId = (int)MyRow["DonorId"],
-                        DonorName = (string)MyRow["Name"],
-                    DonationTypeId = (int)MyRow["DonationTypeID"],
-                    Reference = (string)MyRow["Reference"],
-                        DonationType = (string)MyRow["DonationType"],
-                        PaymentModeId = (int)MyRow["PaymentModeId"],
-                        PaymentMode = (string)MyRow["PaymentMode"],
-                        ChequeNo = (string)MyRow["ChequeNo"],
-                        CurrencyId = (int)MyRow["CurrencyId"],
-                        Currency = (string)MyRow["Currency"],
-                        Amount = (decimal)MyRow["Amount"],
-                        Remarks = (string)MyRow["Remarks"],
-                        Email = (string)MyRow["Email"],
-                        PhoneNumber = (string)MyRow["Phone Number"],
-                        Status = (string)MyRow["Status"],
-                        Rec_No = (int)MyRow["Rec_No"],
-                        Rec_Date = (DateTime)MyRow["Rec_Date"]
-
-                    };
-
-            }
-        }
-
-    private DataTable GetDonation()
-    {
-        tb_donation = new("Donation");
-        tb_donation.MyDataView.RowFilter = $"[ID] = '{donation.ID}'";
-        if (tb_donation.MyDataView.Count > 0)
-        {
-            return tb_donation.MyDataView.ToTable();
-        }
-        return tb_donation.MyDataTable.Clone();
     }
-
-    private void Model2Row()
-    {
-    
-        MyRow = DonationTable.NewRow();
-        MyRow["DonationID"] = donation.ID;
-        MyRow["DonorID"] = donation.DonorId;
-        MyRow["Name"] = donation.DonorName;
-        MyRow["DonationTypeID"] = donation.DonationTypeId;
-        MyRow["Reference"] = donation.Reference;
-        MyRow["DonationType"] = donation.DonationType;
-        MyRow["PaymentModeID"] = donation.PaymentModeId;
-        MyRow["PaymentMode"] = donation.PaymentMode;
-        MyRow["ChequeNo"] = donation.ChequeNo;
-        MyRow["ChequeDate"] = donation.ChequeDate;
-        MyRow["CurrencyID"] = donation.CurrencyId;
-        MyRow["Currency"] = donation.Currency;
-        MyRow["Amount"] = donation.Amount;
-        MyRow["Remarks"] = donation.Remarks;
-        MyRow["Gmail"] = donation.Email;
-        MyRow["Phone Number"] = donation.PhoneNumber;
-        MyRow["Status"] = donation.Status;
-        MyRow["Rec_No"] = donation.Rec_No;
-        MyRow["Rec_Date"] = donation.Rec_Date;
-    }
-
-
 
     private void SaveDonation()
     {
-        Model2Row();
-        string _TableName = MyRow.Table.TableName;
-        long _ID = (long)MyRow["ID"];
-        int _Effected;
+        var RowSave = Model.Donation2Row(Model.SelectedDonation);
         TableClass _Table = new("Donation");
-        var _RecDate = ((DateTime)MyRow["Rec_Date"]).ToString("yyyy-MM-dd");
-        var _Amount = ((decimal)MyRow["Amount"]).ToString("###,###,###.##");
-
-        string _Filter = $"[ID]={_ID}";
-        _Table.MyDataView.RowFilter = _Filter;
-
-        if (_Table.MyDataView.Count == 1)
+        if(_Table.Save(RowSave))
         {
-            var _Command = new SQLiteCommand(ConnectionClass.GetConnected());
-            var _Text = new StringBuilder();
-            _Text.Append($"UPDATE [{_TableName}] SET ");
-            _Text.Append($"[DonorID]={MyRow["DonorID"]}, ");
-            _Text.Append($"[DonationTypeID]={MyRow["DonationTypeID"]}, ");
-            _Text.Append($"[CurrencyID]={MyRow["CurrencyID"]}, ");
-            _Text.Append($"[PaymentModeID]={MyRow["PaymentModeID"]}, ");
-            _Text.Append($"[Amount]={MyRow["Amount"]}, ");
-            _Text.Append($"[Rec_Date]='{_RecDate}' ");
-            _Text.Append($"WHERE [DonationID]={_ID}");
-
-            _Command = new(_Text.ToString(), ConnectionClass.GetConnected());
-            _Effected = _Command.ExecuteNonQuery();
-
-            if (_Effected > 0)
-            {
-                MyMessage = $"{_Effected} Row(s) updated successfully.";
-            }
+            // Show Message Record has been saved
         }
         else
         {
-            var _MAXID = (long)_Table.MyDataTable.Compute("MAX(ID)", "") + 1;
-            var _Command = new SQLiteCommand(ConnectionClass.GetConnected());
-            var _Text = new StringBuilder();
-            _Text.Append($"INSERT INTO [{_TableName}] (ID, DonorID, DonationTypeID, CurrencyID, PaymentModeID, Amount, DonationDate) ");
-            _Text.Append($"VALUES ({_MAXID}, {MyRow["DonorID"]}, {MyRow["DonationTypeID"]}, {MyRow["CurrencyID"]}, ");
-            _Text.Append($"{MyRow["PaymentModeID"]}, {MyRow["Amount"]}, '{_RecDate}')");
-
-            try
-            {
-                _Command = new(_Text.ToString(), ConnectionClass.GetConnected());
-                _Effected = _Command.ExecuteNonQuery();
-
-                if (_Effected > 0)
-                {
-                    MyMessage = $"{_Effected} Row(s) inserted successfully.";
-                }
-            }
-            catch (Exception e)
-            {
-                MyMessage = e.Message;
-            }
+            // show message record not saved.
         }
+
+
+        #region Temp
+        //string _TableName = RowSave.Table.TableName;
+        //int _ID = (int)RowSave["ID"];
+        //int _Effected;
+        // TableClass _Table = Model.DonationTable;
+        // var _RecDate = ((DateTime)MyRow["Rec_Date"]).ToString("yyyy-MM-dd");
+        // var _Amount = ((decimal)MyRow["Amount"]).ToString("###,###,###.##");
+
+        // string _Filter = $"[ID]={_ID}";
+        // _Table.MyDataView.RowFilter = _Filter;
+
+        // if (_Table.MyDataView.Count == 1)
+        // {
+        //     var _Command = new SQLiteCommand(ConnectionClass.GetConnected());
+        //     var _Text = new StringBuilder();
+        //     _Text.Append($"UPDATE [{_TableName}] SET ");
+        //     _Text.Append($"[DonorID]={MyRow["DonorID"]}, ");
+        //     _Text.Append($"[DonationTypeID]={MyRow["DonationTypeID"]}, ");
+        //     _Text.Append($"[CurrencyID]={MyRow["CurrencyID"]}, ");
+        //     _Text.Append($"[PaymentModeID]={MyRow["PaymentModeID"]}, ");
+        //     _Text.Append($"[Amount]={MyRow["Amount"]}, ");
+        //     _Text.Append($"[Rec_Date]='{_RecDate}' ");
+        //     _Text.Append($"WHERE [DonationID]={_ID}");
+
+        //     _Command = new(_Text.ToString(), ConnectionClass.GetConnected());
+        //     _Effected = _Command.ExecuteNonQuery();
+
+        //     if (_Effected > 0)
+        //     {
+        //         MyMessage = $"{_Effected} Row(s) updated successfully.";
+        //     }
+        // }
+        // else
+        // {
+        //     var _MAXID = (long)_Table.MyDataTable.Compute("MAX(ID)", "") + 1;
+        //     var _Command = new SQLiteCommand(ConnectionClass.GetConnected());
+        //     var _Text = new StringBuilder();
+        //     _Text.Append($"INSERT INTO [{_TableName}] (ID, DonorID, DonationTypeID, CurrencyID, PaymentModeID, Amount, DonationDate) ");
+        //     _Text.Append($"VALUES ({_MAXID}, {MyRow["DonorID"]}, {MyRow["DonationTypeID"]}, {MyRow["CurrencyID"]}, ");
+        //     _Text.Append($"{MyRow["PaymentModeID"]}, {MyRow["Amount"]}, '{_RecDate}')");
+
+        //     try
+        //     {
+        //         _Command = new(_Text.ToString(), ConnectionClass.GetConnected());
+        //         _Effected = _Command.ExecuteNonQuery();
+
+        //         if (_Effected > 0)
+        //         {
+        //             MyMessage = $"{_Effected} Row(s) inserted successfully.";
+        //         }
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         MyMessage = e.Message;
+        //     }
+        // }
+        #endregion
     }
     private void Submit()
     {
-        var a = donation.ID;
+        var a = 1;
     }
 
     private void Back()
@@ -211,10 +110,16 @@
 
 }
 
-<EditForm Model="@donation" OnSubmit="Submit">
+<EditForm Model="@Model" OnSubmit="Submit">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
+    
+
+
+
+
+@* 
     <div class="row mt-2">
         <div class="col-md-6">
             <label for="Rec_No">Receipt Number</label>
@@ -308,7 +213,7 @@
                 <button type="submit" class="btn btn-primary" @onclick="Submit">Save</button>
             </div>
         </div>
-    </div>
+    </div> *@
 
 </EditForm>
 

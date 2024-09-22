@@ -4,8 +4,8 @@ using System.Data.SQLite;
 
 public class TableClass
 {
-    public DataTable MyDataTable { get; set; }
-    public DataView MyDataView { get; set; }
+    public DataTable MyDataTable { get; set; } = new();
+    public DataView MyDataView { get; set; } = new();
 
     public TableClass(string tableName)
     {
@@ -15,16 +15,41 @@ public class TableClass
         // Load data from the table into MyDataTable
         using (var adapter = new SQLiteDataAdapter($"SELECT * FROM [{tableName}]", connection))
         {
-            MyDataTable = new DataTable();
-            adapter.Fill(MyDataTable);
+            DataSet DataSet = new();
+            adapter.Fill(DataSet);
+
+            if (DataSet.Tables.Count > 0)
+            {
+                MyDataTable = DataSet.Tables[0];
+                MyDataView = MyDataTable.DefaultView;
+            }
         }
-
-        MyDataView = new DataView(MyDataTable);
     }
 
-    public DataRow GetRow(string tableName, string id)
+    public DataRow GetRow(string ID)
     {
-        DataRow[] rows = MyDataTable.Select($"ID = '{id}'");
-        return rows.FirstOrDefault();
+        MyDataView.RowFilter = string.Empty;
+        if (MyDataView.Count > 0)
+        {
+            MyDataView.RowFilter = $"ID={ID}";
+            if (MyDataView.Count > 0)
+            {
+                return MyDataView[0].Row;
+            }
+        }
+        return MyDataTable.NewRow();
+
     }
+
+    public bool Save(DataRow _Row)
+    {
+        return true;
+    }
+
+    public bool Delete(DataRow _Row)
+    {
+
+        return true;
+    }
+
 }

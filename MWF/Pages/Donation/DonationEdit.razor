@@ -25,12 +25,12 @@
 
     protected override void OnInitialized()
     {
-        donation = DonationService.GetDonationById(Id);
+        //donation = DonationService.GetDonationById(Id);
     }
 
     private void HandleValidSubmit()
     {
-        DonationService.UpdateDonation(Id, donation);
+        //DonationService.UpdateDonation(Id, donation);
         Navigation.NavigateTo("/DonationList");
     }
 }

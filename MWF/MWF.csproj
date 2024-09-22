@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Donate\" />
     <Folder Include="wwwroot\GalaryPic\food\" />
     <Folder Include="wwwroot\GalaryPic\well\" />
     <Folder Include="wwwroot\GalaryPic\pump\" />
@@ -56,6 +55,12 @@
 
   <ItemGroup>
     <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AppliedDB">
+      <HintPath>..\..\AppliedAccounts2\AppliedAccounts2App\AppliedDB\AppliedDB\bin\Debug\net6.0\AppliedDB.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
