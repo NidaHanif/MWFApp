@@ -6,7 +6,7 @@ public class ConnectionClass
 {
     public static SQLiteConnection GetConnected()
     {
-        var FileName = "C:\\Development\\MWF\\MWFApp\\MWF\\wwwroot\\Database\\Recieptt.db";
+        var FileName = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Database", "Recieptt.db");
         var ConnectionString = $"Data Source={FileName}";
         var connection = new SQLiteConnection(ConnectionString);
         connection.Open();

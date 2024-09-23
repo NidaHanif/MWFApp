@@ -59,4 +59,10 @@
     <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="AppliedDB">
+      <HintPath>..\..\AppliedAccounts2\AppliedAccounts2App\AppliedDB\AppliedDB\bin\Debug\net6.0\AppliedDB.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

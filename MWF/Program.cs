@@ -12,7 +12,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddScoped<DonationList>();
-builder.Services.AddSingleton<DonationService>();
+//builder.Services.AddSingleton<DonationService>();
 
 var app = builder.Build();
 
@@ -25,6 +25,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 
 app.UseStaticFiles();
 

@@ -1,14 +1,4 @@
-﻿
-@code {
-    private bool collapseNavMenu = true;
-
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-}
+﻿@inject NavigationManager NavManager;
 
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow p-0">
     <div class="container-fluid" style="background: rgb(200, 180, 140); color:rgb(34, 60, 97);">
@@ -16,38 +6,92 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse  justify-content-between">
+        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+
+            <div class="frame">
+                <img src="./GalaryPic/logo.jpg" alt="Logo picture" />
+            </div>
             <ul class="navbar-nav flex-grow-1" style="display: contents; margin-top:4px; margin-bottom:4px">
-                <img src="./GalaryPic/welfare (4).jpg" style="border-radius: 40%; height:" 120vh"; width="50px" ; alt="" />
+                <li class="nav-item">
+                    <button type="submit" class="btn-Menu" id="btn-account" @onclick="Home">Home</button>
+                </li>
+                <li class="nav-item">
+                    <button type="submit" class="btn-Menu" id="btn-account" @onclick="About">About</button>
+                </li>
+                <li class="nav-item">
+                    <button type="submit" class="btn-Menu" id="btn-account" @onclick="Gallery">Gallery</button>
+                </li>
+                <li class="nav-item">
+                    <button type="submit" class="btn-Menu" id="btn-account" @onclick="Review">Review</button>
+                </li>
+                <li class="nav-item">
+                    <button type="submit" class="btn-Menu" id="btn-account" @onclick="Receipt">Receipt</button>
+                </li>
+                <li class="nav-item">
+                    <button type="submit" class="btn-Menu" id="btn-account" @onclick="Contact">Contact us</button>
+                </li>
 
-                <li class="nav-item">
-                    <a href="./" class="nav-link active">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a href="/About" class="nav-link active">About</a>
-
-                </li>
-                <li class="nav-item">
-                    <a href="/Gallery" class="nav-link active">Gallery</a>
-
-                </li>
-                <li class="nav-item">
-                    <a href="/Review" class="nav-link active">Review</a>
-                </li>
-                <li class="nav-item">
-                    <a href="/ContactUs" class="nav-link active">Contact Us</a>
-                </li>
             </ul>
-            <button type="button" class="btn btn-primary" onclick="window.location.href='';">
+            <button type="button" class="btn-Menu" onclick="window.location.href='';">
                 Archived
             </button>
-            <button type="button" class="btn btn-primary" onclick="window.location.href='https://donate.mumtazwelfare.org/';">
+            <button type="button" class="btn-Menu" href="window.location.href='https://donate.mumtazwelfare.org/';">
                 Donate Now
             </button>
-            <a class="btn btn-danger" href="/DonationList" role="button">
-                Reciept
-            </a>
-
         </div>
     </div>
-</nav>    
+</nav>
+
+
+
+@code {
+    public void Home() { NavManager.NavigateTo("/", true); }
+    public void About() { NavManager.NavigateTo("/About", true); }
+    public void Gallery() { NavManager.NavigateTo("/Gallery", true); }
+    public void Review() { NavManager.NavigateTo("/Review", true); }
+    public void Receipt() { NavManager.NavigateTo("/DonationList", true); }
+    public void Contact() { NavManager.NavigateTo("/Contact", true); }
+}
+
+<style>
+    .navbar {
+        height: 60px;
+    }
+
+    .btn-Menu {
+        background-image: linear-gradient(#0dccea, #0d70ea);
+        border: 0;
+        border-radius: 4px;
+        box-shadow: rgba(0, 0, 0, .3) 0 5px 15px;
+        box-sizing: border-box;
+        color: #fff;
+        cursor: pointer;
+        font-family: Montserrat, sans-serif;
+        font-size: .9em;
+        margin: 5px;
+        padding: 10px 15px;
+        text-align: center;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+    }
+
+    .frame {
+        width: 55px; /* Set the width of the frame */
+        height: 55px; /* Set the height of the frame */
+        border: 5px solid solid navy; /* Frame border */
+        border-radius: 20%; /* Rounded frame */
+        overflow: hidden; /* Hide any overflow outside the frame */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+        .frame img {
+            width: 100%; /* Stretch the image to fill the frame horizontally */
+            height: 100%; /* Stretch the image to fill the frame vertically */
+            object-fit: cover; /* Ensures the image covers the frame while being stretched */
+            border-radius: 20%; /* Same border-radius as the frame for a consistent look */
+        }
+
+</style>
