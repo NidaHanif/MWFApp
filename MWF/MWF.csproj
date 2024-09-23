@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Donate\" />
     <Folder Include="wwwroot\GalaryPic\food\" />
     <Folder Include="wwwroot\GalaryPic\well\" />
     <Folder Include="wwwroot\GalaryPic\pump\" />
@@ -55,6 +54,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.ReportingServices.ReportViewerControl.WebForms" Version="150.1652.0" />
+    <PackageReference Include="ReportViewerCore.NETCore" Version="15.1.22" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
   </ItemGroup>
 

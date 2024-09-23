@@ -20,9 +20,8 @@
     public DonationService DonationService { get; set; } = new();
     private DataRow MyRow;
     private string MyMessage;
-    private DataTable DonationTable;
+    private DataTable DonationTable = new DataTable();
     public TableClass tb_donation = new("[Donation]");
-    public DataTable donate;
     public string TableName = "Donation";
     private string ID = string.Empty;
     public void HandleValidSubmit()
