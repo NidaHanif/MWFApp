@@ -10,7 +10,7 @@ public class TableClass
     public TableClass(string tableName)
     {
         // Assuming you're using SQLite, connect and load the table into the DataTable
-        var connection = ConnectionClass.GetConnected();  // Make sure ConnectionClass is defined
+        var connection = ConnectionClass.GetConnected("Recieptt.db");  // Make sure ConnectionClass is defined
 
         // Load data from the table into MyDataTable
         using (var adapter = new SQLiteDataAdapter($"SELECT * FROM [{tableName}]", connection))

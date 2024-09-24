@@ -13,110 +13,188 @@
 
 @code {
     [Parameter] public int ID { get; set; }
-    public DonationService Model { get; set; }
-    public StringBuilder MyMessages { get; set; }
-
-    public void HandleValidSubmit()
-    {
-
-        NavManager.NavigateTo("/DonationList");
-    }
-
 
 
     protected override void OnInitialized()
     {
+        MyMessages = new();
+
         Model = new();
         if (ID > 0)
         {
             Model.SelectDonation(ID);
         }
-    }
-
-    private void SaveDonation()
-    {
-        var RowSave = Model.Donation2Row(Model.SelectedDonation);
-        TableClass _Table = new("Donation");
-        if (_Table.Save(RowSave))
-        {
-            // Show Message Record has been saved
-        }
         else
         {
-            // show message record not saved.
+            Model.SelectedDonation = Model.NewDonation();
         }
-
-
-        #region Temp
-        //string _TableName = RowSave.Table.TableName;
-        //int _ID = (int)RowSave["ID"];
-        //int _Effected;
-        // TableClass _Table = Model.DonationTable;
-        // var _RecDate = ((DateTime)MyRow["Rec_Date"]).ToString("yyyy-MM-dd");
-        // var _Amount = ((decimal)MyRow["Amount"]).ToString("###,###,###.##");
-
-        // string _Filter = $"[ID]={_ID}";
-        // _Table.MyDataView.RowFilter = _Filter;
-
-        // if (_Table.MyDataView.Count == 1)
-        // {
-        //     var _Command = new SQLiteCommand(ConnectionClass.GetConnected());
-        //     var _Text = new StringBuilder();
-        //     _Text.Append($"UPDATE [{_TableName}] SET ");
-        //     _Text.Append($"[DonorID]={MyRow["DonorID"]}, ");
-        //     _Text.Append($"[DonationTypeID]={MyRow["DonationTypeID"]}, ");
-        //     _Text.Append($"[CurrencyID]={MyRow["CurrencyID"]}, ");
-        //     _Text.Append($"[PaymentModeID]={MyRow["PaymentModeID"]}, ");
-        //     _Text.Append($"[Amount]={MyRow["Amount"]}, ");
-        //     _Text.Append($"[Rec_Date]='{_RecDate}' ");
-        //     _Text.Append($"WHERE [DonationID]={_ID}");
-
-        //     _Command = new(_Text.ToString(), ConnectionClass.GetConnected());
-        //     _Effected = _Command.ExecuteNonQuery();
-
-        //     if (_Effected > 0)
-        //     {
-        //         MyMessage = $"{_Effected} Row(s) updated successfully.";
-        //     }
-        // }
-        // else
-        // {
-        //     var _MAXID = (long)_Table.MyDataTable.Compute("MAX(ID)", "") + 1;
-        //     var _Command = new SQLiteCommand(ConnectionClass.GetConnected());
-        //     var _Text = new StringBuilder();
-        //     _Text.Append($"INSERT INTO [{_TableName}] (ID, DonorID, DonationTypeID, CurrencyID, PaymentModeID, Amount, DonationDate) ");
-        //     _Text.Append($"VALUES ({_MAXID}, {MyRow["DonorID"]}, {MyRow["DonationTypeID"]}, {MyRow["CurrencyID"]}, ");
-        //     _Text.Append($"{MyRow["PaymentModeID"]}, {MyRow["Amount"]}, '{_RecDate}')");
-
-        //     try
-        //     {
-        //         _Command = new(_Text.ToString(), ConnectionClass.GetConnected());
-        //         _Effected = _Command.ExecuteNonQuery();
-
-        //         if (_Effected > 0)
-        //         {
-        //             MyMessage = $"{_Effected} Row(s) inserted successfully.";
-        //         }
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         MyMessage = e.Message;
-        //     }
-        // }
-        #endregion
-    }
-    private void Submit()
-    {
-        var a = 1;
     }
 
-    private void Back()
-    {
-        NavManager.NavigateTo("/DonationList");
-    }
 
 
 }
+
+
+<style>
+   
+</style>
+
+<h2 class="text-center">DONATION RECEIPT</h2>
+
+
+@if(Model.MyMessages.Length > 0)
+{
+    <div class="alert-info mb-2">@Model.MyMessages</div>
+}
+
+<EditForm Model="@Model" OnSubmit="Submit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="container container-form1">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-floating mb-3">
+                    <InputNumber @bind-Value="Model.SelectedDonation.Rec_No" class="form-control" id="txtRecNo" placeholder="Receipt No."></InputNumber>
+                    <label for="txtRecNo">Receipt No.</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating mb-3">
+                    <InputDate @bind-Value="Model.SelectedDonation.Rec_Date" class="form-control" id="txtRecDate" placeholder="Receipt Date"></InputDate>
+                    <label for="txtRecDate">Receipt Date</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating mb-3 ">
+                    <InputText @bind-Value="Model.SelectedDonation.Reference" class="form-control" id="txtRef" placeholder="Reference"></InputText>
+                    <label for="txtRef">Reference</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-floating mb-3">
+                    <InputSelect id="ddDonor" class="form-select" TValue="int" Value="@Model.SelectedDonation.DonorID" ValueExpression="@(() => Model.SelectedDonation.DonorID)" ValueChanged="@((e) => DonorChanged(e))">
+                        @foreach (var _CodeTitle in Model.DonorsList)
+                        {
+                            <option value=@_CodeTitle.ID>@_CodeTitle.Title</option>
+                        }
+                    </InputSelect>
+                    <label for="ddSaleman">Donors</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating mb-3">
+                    <InputSelect id="ddType" class="form-select" TValue="int" Value="@Model.SelectedDonation.DonationType" ValueExpression="@(() => Model.SelectedDonation.DonationType)" ValueChanged="@((e) => TypeChanged(e))">
+                        @foreach (var _CodeTitle in Model.TypeList)
+                        {
+                            <option value=@_CodeTitle.ID>@_CodeTitle.Title</option>
+                        }
+                    </InputSelect>
+                    <label for="ddSaleman">Donation Type</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating mb-3">
+                    <InputSelect id="ddMode" class="form-select" TValue="int" Value="@Model.SelectedDonation.PaymentMode" ValueExpression="@(() => Model.SelectedDonation.PaymentMode)" ValueChanged="@((e) => ModeChanged(e))">
+                        @foreach (var _CodeTitle in Model.ModeList)
+                        {
+                            <option value=@_CodeTitle.ID>@_CodeTitle.Title</option>
+                        }
+                    </InputSelect>
+                    <label for="ddSaleman">Payment Mode</label>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-floating mb-3">
+                    <InputSelect id="ddCurrency" class="form-select" TValue="int" Value="@Model.SelectedDonation.Currency" ValueExpression="@(() => Model.SelectedDonation.Currency)" ValueChanged="@((e) => CurrencyChanged(e))">
+                        @foreach (var _CodeTitle in Model.CurrencyList)
+                        {
+                            <option value=@_CodeTitle.ID>@_CodeTitle.Title</option>
+                        }
+                    </InputSelect>
+                    <label for="ddSaleman">Currency</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating mb-3 ">
+                    <InputText @bind-Value="Model.SelectedDonation.ChequeNo" class="form-control" id="txtChqNo" placeholder="Cheque No"></InputText>
+                    <label for="txtChqNo">Cheque No. (if any)</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating mb-3 ">
+                    <InputNumber @bind-Value="Model.SelectedDonation.Amount" class="form-control" id="txtAmount" placeholder="Amount"></InputNumber>
+                    <label for="txtAmount">Amount</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-floating mb-3 ">
+                    <InputText @bind-Value="Model.SelectedDonation.Phone" class="form-control" id="txtPhone" placeholder="Cheque No"></InputText>
+                    <label for="txtPhone">Phone No.</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating mb-3 ">
+                    <InputText @bind-Value="Model.SelectedDonation.Email" class="form-control" id="txtEmail" placeholder="Cheque No"></InputText>
+                    <label for="txtEmail">Email address</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating mb-3 ">
+                    <InputText @bind-Value="Model.SelectedDonation.Remarks" class="form-control" id="txtRemarks" placeholder="Cheque No"></InputText>
+                    <label for="txtRemarks">Remarks</label>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="container container-form2">
+        <div class="row">
+            <div class="col button-container">
+                <button type="Submit" class="btn btn-save" @onclick="SaveDonation" 
+                        data-bs-toggle="modal" data-bs-target="#ShowMessage"> Save
+                </button>
+                <button type="submit" class="btn btn-back" @onclick="Back">Back</button>
+                <button type="submit" class="btn btn-print" @onclick="Print">Print</button>
+                <button type="submit" class="btn btn-Email" @onclick="Email">Email</button>
+                <button type="submit" class="btn btn-SMS" @onclick="SMS">SMS</button>
+            </div>
+            @* <div class="col-2">
+            <button type="submit" class="btn btn-primary" @onclick="Submit">Save</button>
+            </div> *@
+            <div class="col-2">
+            </div>
+        </div>
+    </div>
+
+</EditForm>
+
+<!-- Modal -->
+<div class="modal fade" id="ShowMessage" tabindex="-1" aria-labelledby="ShowMessageLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="ShowMessageLabel">Donation Receipt Saved</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @ModolMessage;
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Print</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <style>
@@ -124,198 +202,61 @@
         width: 100%; /* Make the container full width */
         text-align: center; /* Center text horizontally */
         margin: 0 auto; /* Auto margins for centering in block-level elements */
+        margin-top:5px;
+        margin-bottom:5px;
     }
 
     h2 {
         display: inline-block; /* Allows padding and margins to be applied more effectively */
     }
 
-</style>
-
-<h2 class="text-center">DONATION RECEIPT</h2>
-
-
-<EditForm Model="@Model" OnSubmit="Submit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3">
-                <div class="form-floating mb-3">
-                    <InputNumber @bind-Value="Model.SelectedDonation.Rec_No" class="form-control" id="txtRecNo" placeholder="Receipt No."></InputNumber>
-                    <label for="txtRecNo">Receipt No.</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-floating mb-3">
-                    <InputDate @bind-Value="Model.SelectedDonation.Rec_Date" class="form-control" id="txtRecDate" placeholder="Receipt Date"></InputDate>
-                    <label for="txtRecDate">Receipt Date</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-floating mb-3 ">
-                    <InputText @bind-Value="Model.SelectedDonation.Reference" class="form-control" id="txtRef" placeholder="Reference"></InputText>
-                    <label for="txtRef">Reference</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-floating mb-3 ">
-                    <InputNumber @bind-Value="Model.SelectedDonation.DonorID" class="form-control" id="txtDonor" placeholder="Donar ID"></InputNumber>
-                    <label for="txtDonor">Donar</label>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3">
-                <div class="form-floating mb-3 ">
-                    <InputNumber @bind-Value="Model.SelectedDonation.DonationType" class="form-control" id="txtType" placeholder="Donation Type"></InputNumber>
-                    <label for="txtType">Donation Type</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-floating mb-3 ">
-                    <InputNumber @bind-Value="Model.SelectedDonation.PaymentMode" class="form-control" id="txtMode" placeholder="Mode of Payment"></InputNumber>
-                    <label for="txtMode">Payment Mode</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-floating mb-3 ">
-                    <InputNumber @bind-Value="Model.SelectedDonation.Currency" class="form-control" id="txtCurrency" placeholder="Currency"></InputNumber>
-                    <label for="txtCurrency">Currency</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-floating mb-3 ">
-                    <InputText @bind-Value="Model.SelectedDonation.ChequeNo" class="form-control" id="txtChqNo" placeholder="Cheque No"></InputText>
-                    <label for="txtChqNo">Cheque No. (if any)</label>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3">
-                <div class="form-floating mb-3 ">
-                    <InputNumber @bind-Value="Model.SelectedDonation.Amount" class="form-control" id="txtAmount" placeholder="Amount"></InputNumber>
-                    <label for="txtAmount">Amount</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-floating mb-3 ">
-                    <InputText @bind-Value="Model.SelectedDonation.Phone" class="form-control" id="txtPhone" placeholder="Cheque No"></InputText>
-                    <label for="txtPhone">Phone No.</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-floating mb-3 ">
-                    <InputText @bind-Value="Model.SelectedDonation.Email" class="form-control" id="txtEmail" placeholder="Cheque No"></InputText>
-                    <label for="txtEmail">Email address</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-floating mb-3 ">
-                    <InputText @bind-Value="Model.SelectedDonation.Remarks" class="form-control" id="txtRemarks" placeholder="Cheque No"></InputText>
-                    <label for="txtRemarks">Remarks</label>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    @*
-    <div class="row mt-2">
-    <div class="col-md-6">
-    <label for="Rec_No">Receipt Number</label>
-    <InputNumber id="Rec_No" class="form-control" @bind-Value="donation.Rec_No" />
-    </div>
-    <div class="col-md-6">
-    <label for="Rec_Date">Receipt Date</label>
-    <InputDate id="Rec_Date" class="form-control" @bind-Value="donation.Rec_Date" />
-    </div>
-    <div class="col-md-6">
-    <label for="Email">Email </label>
-    <InputText id="Email" class="form-control" @bind-Value="donation.Email" />
-    <ValidationMessage For="@(() => donation.Email)" />
-    </div>
-
-    <div class="col-md-6">
-    <label for="Phone_Number">Phone Number</label>
-    <InputText id="Phone_Number" class="form-control" @bind-Value="donation.PhoneNumber" />
-    </div>
-
-    <div class="col-md-6">
-    <label for="DonationType">Donation Type</label>
-    <InputSelect id="DonationType" class="form-control" @bind-Value="donation.DonationType">
-    <option value="">-- Select Donation Type --</option>
-    <option value="Cash">Food</option>
-    <option value="Cash">Masjid Fund</option>
-    <option value="Cash">Zakat</option>
-    <option value="Cash">Atiyat</option>
-    <option value="Cash">Sadaqah</option>
-    </InputSelect>
-    </div>
-
-    <div class="col-md-6">
-    <label for="PaymentMode">Payment Mode</label>
-    <InputSelect id="PaymentMode" class="form-control" @bind-Value="donation.PaymentMode">
-    <option value="">-- Select Payment Mode --</option>
-    <option value="Bank">Bank Transfer</option>
-    <option value="Cash">Cash</option>
-    <option value="Cheque">Cheque</option>
-    </InputSelect>
-    </div>
-    @if (donation.PaymentMode == "Cheque")
-    {
-    <div class="form-group">
-    <label for="ChequeNo">Cheque Number</label>
-    <InputText id="ChequeNo" class="form-control" @bind-Value="donation.ChequeNo" />
-    <ValidationMessage For="@(() => donation.ChequeNo)" />
-    </div>
-
-    <div class="form-group">
-    <label for="ChequeDate">Cheque Date</label>
-    <InputDate id="ChequeDate" class="form-control" @bind-Value="donation.ChequeDate" />
-    <ValidationMessage For="@(() => donation.ChequeDate)" />
-    </div>
+    container-form1 {
+        background-color: ghostwhite;
     }
-    <div class="col-md-6">
-    <label for="Currency">Currency</label>
-    <InputSelect id="Currency" class="form-control" @bind-Value="donation.Currency">
-    <option value="">-- Select Currency --</option>
-    <option value="PKR">PKR</option>
-    <option value="USD">USD</option>
-    <option value="EUR">EUR</option>
-    <option value="INR">INR</option>
-    </InputSelect>
-    </div>
 
-    <div class="col-md-6">
-    <label for="Amount">Amount</label>
-    <InputNumber id="Amount" class="form-control" @bind-Value="donation.Amount" />
-    </div>
-    <div class="col-md-6">
-    <label for="Reference">Reference</label>
-    <InputText id="Reference" class="form-control" @bind-Value="donation.Reference" />
-    </div>
+    container-form2{
 
-    <div class="col-md-4">
-    <label for="Remarks">Remarks</label>
-    <InputTextArea id="Remarks" class="form-control" @bind-Value="donation.Remarks" />
-    </div>
-    </div>
+    }
+    
+    .button-container {
+        display: flex;
+        justify-content: space-between; /* You can use other values like 'center', 'flex-start', etc. */
+        gap: 10px; /* Adjust the space between buttons */
+    }
 
-    <div class="=container">
-    <div class="row">
-    <div class="col-3">
-    <button type="submit" class="btn btn-primary" @onclick="Back" style="text-align:center; margin-bottom: 20px;">Save</button>
-    </div>
-    <div class="col-3">
-    <button type="button" @onclick="SaveDonation" class="btn btn-success">Save Data</button>
-    </div>
-    <div class="col-3">
-    <button type="submit" class="btn btn-primary" @onclick="Submit">Save</button>
-    </div>
-    </div>
-    </div> *@
+    .btn-save {
+        background-color:gold;
+        color: darkred;
+        padding: 10px;
+        width: 200px;
+    }
+    
 
-</EditForm>
+    .btn-back {
+        background-color: dodgerblue;
+        color: white;
+        padding: 10px;
+        width: 200px;
+    }
 
+    .btn-print {
+        background-color:forestgreen;
+        color: white;
+        padding: 10px;
+        width: 200px;
+    }
 
+    .btn-Email {
+        background-color:brown;
+        color: white;
+        padding: 10px;
+        width: 200px;
+    }
+
+    .btn-SMS {
+        background-color: brown;
+        color: white;
+        padding: 10px;
+        width: 200px;
+    }
+</style>

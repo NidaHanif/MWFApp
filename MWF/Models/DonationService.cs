@@ -1,15 +1,36 @@
 ﻿using System.Data;
 using System.Text;
 using System.Runtime.CompilerServices;
+using System.Data.SQLite;
+using AppliedDB;
+using MWF.Codes;
 
 namespace MWF.Models
 {
     public class DonationService
     {
         public List<Donation> DonationList = new List<Donation>();
-        public Donation SelectedDonation { get; set; } = new();
-        public DataTable DonationTable { get; set; } = new();
-        public StringBuilder MyMessages { get; set; } = new();
+        public Donation SelectedDonation { get; set; }
+        public DataTable DonationTable { get; set; }
+        public StringBuilder MyMessages { get; set; }
+        public SQLiteConnection MyConnection { get; set; }
+
+        public List<CodeTitle> TypeList { get; set; }
+        public List<CodeTitle> ModeList { get; set; }
+        public List<CodeTitle> CurrencyList { get; set; }
+        public List<CodeTitle> DonorsList { get; set; }
+
+        public string TitleDonor { get; set; }
+        public string TitleCurrency { get; set; }
+        public string TitleMode { get; set; }
+        public string TitleType { get; set; }
+
+        public SMSService SMSClass { get; set; }
+        public EmailService EmailClass { get; set; }
+
+        public string SearchText { get; set; }
+
+
 
         public DonationService()
         {
@@ -23,6 +44,25 @@ namespace MWF.Models
                 SelectedDonation = NewDonation();
             }
 
+            MyMessages = new();
+            MyConnection = ConnectionClass.GetConnected("Recieptt.db");
+            DonationTable = new();
+
+            TypeList = AppliedDB.DataSource.GetCodeTitle("DonationType", MyConnection);
+            ModeList = AppliedDB.DataSource.GetCodeTitle("PaymentMode", MyConnection);
+            CurrencyList = AppliedDB.DataSource.GetCodeTitle("Currency", MyConnection);
+            DonorsList = AppliedDB.DataSource.GetCodeTitle("Donor", MyConnection);
+                
+
+            TitleDonor = string.Empty;
+            TitleMode = string.Empty;
+            TitleType = string.Empty;
+            TitleCurrency = string.Empty;
+
+            SMSClass = new();
+            EmailClass = new();
+
+
         }
 
         #region Get Record from DataTable to Donation List
@@ -34,7 +74,8 @@ namespace MWF.Models
             {
                 TableClass _TableClass = new("vew_Donation");
 
-                foreach (DataRow _Row in _TableClass.MyDataTable.Rows)
+                DonationTable = _TableClass.MyDataTable;
+                foreach (DataRow _Row in DonationTable.Rows)
                 {
                     _Donations.Add(Row2Donation(_Row));
                 }
@@ -42,7 +83,7 @@ namespace MWF.Models
             catch (Exception ex)
             {
                 MyMessages.AppendLine(ex.Message);
-                MyMessages.Append($" - Error found in GetDonation() {LogCallerInfo()}"  );
+                MyMessages.Append($" - Error found in GetDonation() {LogCallerInfo()}");
             }
 
             return _Donations;
@@ -119,22 +160,28 @@ namespace MWF.Models
 
         public DataRow Donation2Row(Donation _Donation)
         {
-            var _Row = DonationTable.NewRow();
-            _Row["ID"] = _Donation.ID;
-            _Row["Rec_No"] = _Donation.Rec_No;
-            _Row["Rec_Date"] = _Donation.Rec_Date;
-            _Row["DonorID"] = _Donation.DonorID;
-            _Row["Reference"] = _Donation.Reference;
-            _Row["DonationType"] = _Donation.DonationType;
-            _Row["PaymentMode"] = _Donation.PaymentMode;
-            _Row["ChequeNo"] = _Donation.ChequeNo;
-            _Row["Currency"] = _Donation.Currency;
-            _Row["Amount"] = _Donation.Amount;
-            _Row["Remarks"] = _Donation.Remarks;
-            _Row["Email"] = _Donation.Email;
-            _Row["Phone"] = _Donation.Phone;
-            _Row["Status"] = _Donation.Status;
-            return _Row;
+            var _Table = DataSource.GetDataTable("Donation", MyConnection);
+            if (_Table != null && _Table.Columns.Count > 0)
+            {
+
+                var _Row = _Table.NewRow();
+                _Row["ID"] = _Donation.ID;
+                _Row["Rec_No"] = _Donation.Rec_No;
+                _Row["Rec_Date"] = _Donation.Rec_Date;
+                _Row["DonorID"] = _Donation.DonorID;
+                _Row["Reference"] = _Donation.Reference;
+                _Row["DonationType"] = _Donation.DonationType;
+                _Row["PaymentMode"] = _Donation.PaymentMode;
+                _Row["ChequeNo"] = _Donation.ChequeNo;
+                _Row["Currency"] = _Donation.Currency;
+                _Row["Amount"] = _Donation.Amount;
+                _Row["Remarks"] = _Donation.Remarks;
+                _Row["Email"] = _Donation.Email;
+                _Row["Phone"] = _Donation.Phone;
+                _Row["Status"] = _Donation.Status;
+                return _Row;
+            }
+            return null;
         }
         #endregion
 
