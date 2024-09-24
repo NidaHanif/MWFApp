@@ -18,6 +18,17 @@ namespace MWF.Models
         public List<CodeTitle> TypeList { get; set; }
         public List<CodeTitle> ModeList { get; set; }
         public List<CodeTitle> CurrencyList { get; set; }
+        public List<CodeTitle> DonorsList { get; set; }
+
+        public string TitleDonor { get; set; }
+        public string TitleCurrency { get; set; }
+        public string TitleMode { get; set; }
+        public string TitleType { get; set; }
+
+        public SMSService SMSClass { get; set; }
+        public EmailService EmailClass { get; set; }
+
+        public string SearchText { get; set; }
 
 
 
@@ -38,6 +49,18 @@ namespace MWF.Models
             DonationTable = new();
 
             TypeList = AppliedDB.DataSource.GetCodeTitle("DonationType", MyConnection);
+            ModeList = AppliedDB.DataSource.GetCodeTitle("PaymentMode", MyConnection);
+            CurrencyList = AppliedDB.DataSource.GetCodeTitle("Currency", MyConnection);
+            DonorsList = AppliedDB.DataSource.GetCodeTitle("Donor", MyConnection);
+                
+
+            TitleDonor = string.Empty;
+            TitleMode = string.Empty;
+            TitleType = string.Empty;
+            TitleCurrency = string.Empty;
+
+            SMSClass = new();
+            EmailClass = new();
 
 
         }

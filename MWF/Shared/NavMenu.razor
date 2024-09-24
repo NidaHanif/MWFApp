@@ -11,27 +11,20 @@
             <div class="frame">
                 <img src="./GalaryPic/logo.jpg" alt="Logo picture" />
             </div>
-            <ul class="navbar-nav flex-grow-1" style="display: contents; margin-top:4px; margin-bottom:4px">
-                <li class="nav-item">
-                    <button type="submit" class="btn-Menu" id="btn-account" @onclick="Home">Home</button>
-                </li>
-                <li class="nav-item">
-                    <button type="submit" class="btn-Menu" id="btn-account" @onclick="About">About</button>
-                </li>
-                <li class="nav-item">
-                    <button type="submit" class="btn-Menu" id="btn-account" @onclick="Gallery">Gallery</button>
-                </li>
-                <li class="nav-item">
-                    <button type="submit" class="btn-Menu" id="btn-account" @onclick="Review">Review</button>
-                </li>
-                <li class="nav-item">
-                    <button type="submit" class="btn-Menu" id="btn-account" @onclick="Receipt">Receipt</button>
-                </li>
-                <li class="nav-item">
-                    <button type="submit" class="btn-Menu" id="btn-account" @onclick="Contact">Contact us</button>
-                </li>
 
-            </ul>
+            <div class="button-container">
+                <button class="btn-Menu" @onclick="Home">Home</button>
+                <button class="btn-Menu" @onclick="About">About</button>
+                <button class="btn-Menu" @onclick="Gallery">Gallery</button>
+                <button class="btn-Menu" @onclick="Review">Review</button>
+                <button class="btn-Menu" @onclick="Receipt">Receipt</button>
+                <button class="btn-Menu" @onclick="Contact">Contact Us</button>
+                <button class="btn-Menu">Archived</button>
+                <button class="btn-Menu">Donate Now</button>
+            </div>
+
+
+
             <button type="button" class="btn-Menu" onclick="window.location.href='';">
                 Archived
             </button>
@@ -54,9 +47,14 @@
 }
 
 <style>
-    .navbar {
-        height: 60px;
+    /*  Menu Buttom */
+    .button-container {
+        display: flex;
+        justify-content: space-around; /* Space between the buttons */
+        gap: 15px; /* Adjust this value to control the space between buttons */
+        padding: 10px; /* Padding around the container */
     }
+         
 
     .btn-Menu {
         background-image: linear-gradient(#0dccea, #0d70ea);
@@ -75,6 +73,20 @@
         -webkit-user-select: none;
         touch-action: manipulation;
     }
+
+        .btn-Menu:hover {
+            transform: scale(1.1); /* Slightly increase size on hover */
+        }
+
+    /*  Menu Buttom END */
+
+    .navbar {
+        height: 75px;
+    }
+
+
+
+
 
     .frame {
         width: 55px; /* Set the width of the frame */
