@@ -59,7 +59,9 @@ namespace MWF.Pages.Donation
 
         private void Email()
         {
-
+            EmailService _Email = new();
+            _Email.SendEmail();
+            _Email.SendEmail2();
         }
 
 

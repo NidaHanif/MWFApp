@@ -28,7 +28,6 @@
     <Folder Include="wwwroot\GalaryPic\Sadqa Bakra\" />
     <Folder Include="wwwroot\GalaryPic\Qurbani 2023\" />
     <Folder Include="wwwroot\GalaryPic\Qurani Makatib\" />
-    <Folder Include="wwwroot\OutputFiles\" />
     <Folder Include="wwwroot\Reports\" />
   </ItemGroup>
 
