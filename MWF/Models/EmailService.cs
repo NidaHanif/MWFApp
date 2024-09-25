@@ -6,14 +6,13 @@ namespace MWF.Models
 {
     public class EmailService
     {
-        public string MyMessage { get; set; } 
-        public string FromEmail { get; set; } 
-        public string ToEmail { get; set; } 
-        public string Subject { get; set; } 
+        public string MyMessage { get; set; }
+        public string FromEmail { get; set; }
+        public string ToEmail { get; set; }
+        public string Subject { get; set; }
         public string Body { get; set; }
         public string AttachementPath { get; set; }
 
-        private SmtpService smtpService;
 
         public EmailService()
         {
@@ -28,61 +27,43 @@ namespace MWF.Models
 
             // SMTP Server details
 
-            smtpService = new SmtpService();
-           
+
+            SmtpClient smtpClient = new SmtpClient();
+            SmtpClass smtpClass = new();
+
+            smtpClient.Host = smtpClass.smtpHost;
+            smtpClient.Port = smtpClass.smtpPort;
+            smtpClient.Credentials = new NetworkCredential(smtpClass.smtpUsername, smtpClass.smtpPassword);
+            smtpClient.EnableSsl = true;
+
         }
 
-        public void SendEmail2()
-        {
-            var smtpClient = new SmtpClient("mail.mumtazwelfare.org")
-            {
-                Port = 465, // or 465, depending on your provider
-                Credentials = new NetworkCredential("receipt@mumtazwelfare.org", "Mumtaz%786"),
-                EnableSsl = true,
-            };
-
-            var mailMessage = new MailMessage
-            {
-                From = new MailAddress("receipt@mumtazwelfare.org"),
-                Subject = "Test Email",
-                Body = "This is a test email.",
-                IsBodyHtml = true,
-            };
-            mailMessage.To.Add("aamirjk1968@gmail.com");
-
-            try
-            {
-                smtpClient.Send(mailMessage);
-            }
-            catch (SmtpException ex)
-            {
-                // Log or handle the exception
-                Console.WriteLine(ex.Message);
-            }
-        }
-
-
-
+       
         public void SendEmail()
         {
             try
             {
                 // Create a new MailMessage object
                 MailMessage mail = new MailMessage(FromEmail, ToEmail);
+
+                mail.BodyEncoding = System.Text.Encoding.UTF8;
+                mail.SubjectEncoding = System.Text.Encoding.UTF8;
+
                 mail.Subject = Subject;
                 mail.Body = Body;
 
-                //Attachment attachment = new Attachment(AttachementPath);
-                //mail.Attachments.Add(attachment);
+                Attachment attachment = new Attachment(AttachementPath);
+                mail.Attachments.Add(attachment);
 
+                SmtpClass smtpClass = new();
 
                 // Create a new SmtpClient object
-                SmtpClient smtpClient = new SmtpClient(smtpService.smtpHost, smtpService.smtpPort);
+                SmtpClient smtpClient = new SmtpClient(smtpClass.smtpHost, smtpClass.smtpPort);
 
                 // Enable SSL and set the credentials
                 smtpClient.EnableSsl = true;
-                smtpClient.Credentials = new NetworkCredential(smtpService.smtpUsername, smtpService.smtpPassword);
-                
+                smtpClient.Credentials = new NetworkCredential(smtpClass.smtpUsername, smtpClass.smtpPassword);
+
                 // Send the email
                 smtpClient.Send(mail);
                 Console.WriteLine("Email sent successfully.");
@@ -96,11 +77,11 @@ namespace MWF.Models
 
     }
 
-    public class SmtpService
+    public class SmtpClass
     {
         // SMTP Server details
-        public string smtpHost { get; set; } = "smtp.mumtazwelfare.org";  // Replace with your SMTP server
-        public int smtpPort { get; set; } = 465;  // Replace with your SMTP port (587 for TLS, 465 for SSL)
+        public string smtpHost { get; set; } = "mail.mumtazwelfare.org";  // Replace with your SMTP server
+        public int smtpPort { get; set; } = 587;  // Replace with your SMTP port (587 for TLS, 465 for SSL)
         public string smtpUsername { get; set; } = "receipt@mumtazwelfare.org";
         public string smtpPassword { get; set; } = "Mumtaz%786";
 

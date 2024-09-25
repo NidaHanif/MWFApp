@@ -61,7 +61,7 @@ namespace MWF.Pages.Donation
         {
             EmailService _Email = new();
             _Email.SendEmail();
-            _Email.SendEmail2();
+            //_Email.SendEmail2();
         }
 
 
