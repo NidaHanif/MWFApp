@@ -8,6 +8,14 @@ html {
         font-size: 16px;
     }
 }
+
+@media (max-width: 768px) {
+    /* Responsive adjustments */
+    .button-container {
+        gap: 10px; /* Reduce space between buttons on smaller screens */
+    }
+}
+
 html {
     position: relative;
     min-height: 100%;

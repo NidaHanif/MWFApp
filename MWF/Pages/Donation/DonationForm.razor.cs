@@ -28,7 +28,7 @@ namespace MWF.Pages.Donation
             var _DataRow = Model.Donation2Row(Model.SelectedDonation);
             AppliedDB.CommandClass _Commands = new(_DataRow, Source.MyConnection);
 
-            
+
             if (_Commands.SaveChanges())
             {
                 ModolMessage = "Donation receipt has been saved.";
@@ -39,7 +39,7 @@ namespace MWF.Pages.Donation
             }
 
 
-           
+
         }
 
         private void Back()
@@ -59,9 +59,24 @@ namespace MWF.Pages.Donation
 
         private void Email()
         {
-            EmailService _Email = new();
-            _Email.SendEmail();
-            //_Email.SendEmail2();
+            var Donor = Model.SelectedDonation;
+
+            if (EmailService.IsValidEmail(Donor.Email))
+            {
+                var _Body = new StringBuilder();
+
+                _Body.AppendLine($"Received donation with Thanks From {Donor.TitleDonor}");
+                _Body.AppendLine($"for the help in {Donor.TitleDonationType}");
+                _Body.Append($" through {Donor.TitlePaymentMode}");
+
+                var _Email = new EmailService(Donor.Email);
+
+                _Email.Subject = $"Donation Receipt # {Donor.Rec_No} dated {Donor.Rec_Date}";
+                _Email.Body = _Body.ToString();
+
+                // Send email
+                _Email.SendEmail();
+            }
         }
 
 
@@ -102,17 +117,17 @@ namespace MWF.Pages.Donation
             _AppUser.SessionFolder = "Database";
             _AppUser.SystemFolder = "Database";
             _AppUser.MessageFolder = "Database";
-            _AppUser.DataPath= "Database";
-            _AppUser.ReportFolder= "Reports";
-            _AppUser.PDFFolder= "OutputFiles";
-            _AppUser.ClientFolder= "Database";
+            _AppUser.DataPath = "Database";
+            _AppUser.ReportFolder = "Reports";
+            _AppUser.PDFFolder = "OutputFiles";
+            _AppUser.ClientFolder = "Database";
 
 
             return _AppUser;
         }
 
-      
-       
-       
+
+
+
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System.Net.Mail;
 using System.Net;
 using System;
+using System.Text.RegularExpressions;
+
 
 namespace MWF.Models
 {
@@ -14,13 +16,12 @@ namespace MWF.Models
         public string AttachementPath { get; set; }
 
 
-        public EmailService()
+        public EmailService(string _EmailTo)
         {
             MyMessage = "This is a test email sent from C#. Blazor Class";
-
             // Email details
             FromEmail = "receipt@mumtazwelfare.org";
-            ToEmail = "aamirjk1968@gmail.com";
+            ToEmail = _EmailTo;
             Subject = "Test Email from Blazor Class";
             AttachementPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "OutputFiles", "Sample.pdf");
             Body = MyMessage;
@@ -38,7 +39,17 @@ namespace MWF.Models
 
         }
 
-       
+
+        public static bool IsValidEmail(string email)
+        {
+            // Define a regex pattern for validating an email
+            string emailPattern = @"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$";
+
+            // Use Regex.IsMatch to check if the string matches the pattern
+            return Regex.IsMatch(email, emailPattern);
+        }
+
+
         public void SendEmail()
         {
             try
@@ -52,13 +63,13 @@ namespace MWF.Models
                 mail.Subject = Subject;
                 mail.Body = Body;
 
-                Attachment attachment = new Attachment(AttachementPath);
+                Attachment attachment = new(AttachementPath);
                 mail.Attachments.Add(attachment);
 
                 SmtpClass smtpClass = new();
 
                 // Create a new SmtpClient object
-                SmtpClient smtpClient = new SmtpClient(smtpClass.smtpHost, smtpClass.smtpPort);
+                SmtpClient smtpClient = new(smtpClass.smtpHost, smtpClass.smtpPort);
 
                 // Enable SSL and set the credentials
                 smtpClient.EnableSsl = true;
@@ -66,15 +77,13 @@ namespace MWF.Models
 
                 // Send the email
                 smtpClient.Send(mail);
-                Console.WriteLine("Email sent successfully.");
+                MyMessage = "Email sent successfully.";
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error sending email: " + ex.Message);
+                MyMessage = "Error sending email: " + ex.Message;
             }
         }
-
-
     }
 
     public class SmtpClass

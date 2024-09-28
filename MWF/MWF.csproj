@@ -15,6 +15,8 @@
     <Content Remove="Pages\NewFolder\Home.cshtml" />
     <Content Remove="Pages\Qurbani2023.razor" />
     <Content Remove="Pages\Ramadan Ration.razor" />
+    <Content Remove="wwwroot\Database\Reciept.db" />
+    <Content Remove="wwwroot\Database\Recieptt.db" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,13 +24,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\Database\" />
     <Folder Include="wwwroot\GalaryPic\food\" />
     <Folder Include="wwwroot\GalaryPic\well\" />
     <Folder Include="wwwroot\GalaryPic\pump\" />
     <Folder Include="wwwroot\GalaryPic\Sadqa Bakra\" />
     <Folder Include="wwwroot\GalaryPic\Qurbani 2023\" />
     <Folder Include="wwwroot\GalaryPic\Qurani Makatib\" />
-    <Folder Include="wwwroot\OutputFiles\" />
     <Folder Include="wwwroot\Reports\" />
   </ItemGroup>
 
@@ -56,6 +58,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Infobip.Api.Client" Version="3.0.1" />
+    <PackageReference Include="Infobip.Api.SDK" Version="1.0.3" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
   </ItemGroup>
 
