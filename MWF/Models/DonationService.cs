@@ -60,7 +60,7 @@ namespace MWF.Models
             TitleCurrency = string.Empty;
 
             SMSClass = new();
-            //EmailClass = new();
+            EmailClass = new();
 
 
         }
@@ -154,11 +154,6 @@ namespace MWF.Models
                 Email = (string)_Row["Email"],
                 Phone = (string)_Row["Phone"],
                 Status = (string)_Row["Status"],
-                TitleDonor = (string)_Row["DonorName"],
-                TitlePaymentMode = (string)_Row["PaymentTitle"],
-                TitleDonationType = (string)_Row["TypeTitle"],
-                TitleCurrency = (string)_Row["CurrencyTitle"],
-
             };
             return _Donation;
         }

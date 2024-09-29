@@ -5,6 +5,7 @@ namespace MWF.Pages.Donation
 {
     public partial class DonationList
     {
+        [Inject] public NavigationManager NavManager => default! ;
         public DonationService Model { get; set; }
         private string MyMessage { get; set; } = string.Empty;
         public int? Count => Model.DonationList.Count;
