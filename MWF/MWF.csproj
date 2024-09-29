@@ -17,6 +17,7 @@
     <Content Remove="Pages\Ramadan Ration.razor" />
     <Content Remove="wwwroot\Database\Reciept.db" />
     <Content Remove="wwwroot\Database\Recieptt.db" />
+    <Content Remove="wwwroot\Database\___Recieptt.db" />
   </ItemGroup>
 
   <ItemGroup>
@@ -60,12 +61,16 @@
   <ItemGroup>
     <PackageReference Include="Infobip.Api.Client" Version="3.0.1" />
     <PackageReference Include="Infobip.Api.SDK" Version="1.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="AppliedDB">
-      <HintPath>..\..\AppliedAccounts2\AppliedAccounts2App\AppliedDB\AppliedDB\bin\Debug\net6.0\AppliedDB.dll</HintPath>
+      <HintPath>wwwroot\Libs\AppliedDB.dll</HintPath>
+    </Reference>
+    <Reference Include="AppMessages">
+      <HintPath>..\..\..\AppliedAccounts2\AppliedDB\AppliedDB\bin\Debug\net6.0\AppMessages.dll</HintPath>
     </Reference>
   </ItemGroup>
 
