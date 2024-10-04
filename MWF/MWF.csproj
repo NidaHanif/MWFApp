@@ -63,7 +63,10 @@
 
   <ItemGroup>
     <Reference Include="AppliedDB">
-      <HintPath>..\..\AppliedAccounts2\AppliedAccounts2App\AppliedDB\AppliedDB\bin\Debug\net6.0\AppliedDB.dll</HintPath>
+      <HintPath>wwwroot\Libs\AppliedDB.dll</HintPath>
+    </Reference>
+    <Reference Include="AppMessages">
+      <HintPath>wwwroot\Libs\AppMessages.dll</HintPath>
     </Reference>
   </ItemGroup>
 
