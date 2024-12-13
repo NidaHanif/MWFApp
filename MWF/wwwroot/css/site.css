@@ -111,6 +111,7 @@ body {
 .imgcard img {
     width: 20rem;
     height: 20rem;
+    border-radius: 10px;
 }
 .imgcard video {
     width: 25rem;
@@ -307,6 +308,7 @@ h5.ant-typography {
     margin: 70px;
     background-color: lightgrey;
     text-align: center;
+    border-radius: 10px;
 }
 h22{
     font-weight: bold;
@@ -323,9 +325,12 @@ input, textarea{
 }
 buttonsubmit {
     border: none;
-    border-radius: 3px;
+    border-radius: 5px;
     background-color: blue;
     padding: 7px 30px;
     color: rgb(34, 60, 97);
     background-color: white;
+}
+.table-hover{
+    width: 30%;
 }

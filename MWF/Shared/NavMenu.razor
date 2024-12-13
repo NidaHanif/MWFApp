@@ -29,7 +29,7 @@
                 <button class="btn-menu" @onclick="Review" data-bs-toggle="tooltip" title="Check out Reviews">Review</button>
                 <button class="btn-menu" @onclick="Receipt" data-bs-toggle="tooltip" title="View Receipts">Receipt</button>
                 <button class="btn-menu" @onclick="Contact" data-bs-toggle="tooltip" title="Contact Us">Contact</button>
-                <button class="btn-menu" @onclick="Archived" data-bs-toggle="tooltip" title="View Archived Information">Archived</button>
+                <button class="btn-menu" @onclick="OpenCertificate" data-bs-toggle="tooltip" title="View Certificate">Certificate</button>
                 <button class="btn-menu" @onclick="Donate" data-bs-toggle="tooltip" title="Donate Now to Support Us">Donate</button>
             </div>
         </div>
@@ -37,14 +37,26 @@
 </div>
 
 @code {
+
+
+    private void OpenCertificate()
+    {
+        // JavaScript Interop to open the PDF in a new tab
+        var certificateUrl = "/OutputFiles/Shariah_Certificate_for_Mumtaz_Welfare_Foundation.pdf";
+        JSRuntime.InvokeVoidAsync("open", certificateUrl, "_blank");
+    }
+
+    [Inject] IJSRuntime JSRuntime { get; set; }
+
+
     // Navigation Methods
     public void Home() { NavManager.NavigateTo("/", true); }
     public void About() { NavManager.NavigateTo("/About", true); }
     public void Gallery() { NavManager.NavigateTo("/Gallery", true); }
     public void Review() { NavManager.NavigateTo("/Review", true); }
     public void Receipt() { NavManager.NavigateTo("/DonationList", true); }
-    public void Contact() { NavManager.NavigateTo("/Contact", true); }
-    public void Archived() { NavManager.NavigateTo("/Archived", true); }
+    public void Contact() { NavManager.NavigateTo("/ContactUs", true); }
+    public void Certificate() { NavManager.NavigateTo("/OutputFiles/Shariah_Certificate_for_Mumtaz_Welfare_Foundation.pdf", true); }
     public void Donate() { NavManager.NavigateTo("https://donate.mumtazwelfare.org", true); }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
